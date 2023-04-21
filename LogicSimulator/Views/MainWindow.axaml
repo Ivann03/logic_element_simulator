@@ -13,5 +13,5 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    <TextBlock Text="Формат хранения проектов со схемами: YAML&#13;Формат хранения списка открытых проектов: YAML&#13;Дополнительный вентиль: MUX (Мультиплексор)" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16"/>
 </Window>
