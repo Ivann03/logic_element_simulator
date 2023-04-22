@@ -3,9 +3,9 @@ using Avalonia.Controls;
 using System.ComponentModel;
 
 namespace LogicSimulator.Views.Shapes {
-    public partial class AND_2: GateBase, IGate, INotifyPropertyChanged {
+    public partial class MUX_3: GateBase, IGate, INotifyPropertyChanged {
         public override int CountIns => 2;
-        public override int CountOuts => 1;
+        public override int CountOuts => 2;
         public override UserControl GetSelf() => this;
         protected override IGate GetSelfI => this;
 
@@ -33,7 +33,8 @@ namespace LogicSimulator.Views.Shapes {
             return new Point[][] {
                 new Point[] { new(X, Y), new(X + PinWidth, Y) }, // Первый вход
                 new Point[] { new(X, Y2), new(X + PinWidth, Y2) }, // Второй вход
-                new Point[] { new(X2, Y_m), new(X2 + PinWidth, Y_m) }, // Единственный выход
+                new Point[] { new(X2, Y), new(X2 + PinWidth, Y) }, // Первый выход
+                new Point[] { new(X2, Y2), new(X2 + PinWidth, Y2) }, // Второй выход
             };
         } }
 
@@ -41,6 +42,9 @@ namespace LogicSimulator.Views.Shapes {
          * Мозги
          */
 
-        public void Brain(ref bool[] ins, ref bool[] outs) => outs[0] = ins[0] && ins[1];
+        public void Brain(ref bool[] ins, ref bool[] outs) {
+            int num = (ins[8] ? 4 : 0) | (ins[9] ? 2 : 0) | (ins[10] ? 1 : 0);
+            outs[0] = ins[num];
+        }
     }
 }
