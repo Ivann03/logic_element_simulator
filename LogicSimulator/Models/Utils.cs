@@ -682,7 +682,7 @@ namespace LogicSimulator.Models {
             return dateTime;
         }
         public static string UnixTimeStampToString(this long unixTimeStamp) {
-            return UnixTimeStampToDateTime(unixTimeStamp).ToString("yyyy/mm/dd H:mm:ss");
+            return UnixTimeStampToDateTime(unixTimeStamp).ToString("yyyy/MM/dd H:mm:ss");
         }
     }
 }
