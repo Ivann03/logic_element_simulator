@@ -418,34 +418,6 @@ namespace LogicSimulator.Models {
             }
         }
 
-        public void WheelMove(Control item, double move, Point pos) {
-            // Log.Write("WheelMoved: " + item.GetType().Name + " delta: " + (move > 0 ? 1 : -1));
-            int mode = CalcMode((string?) item.Tag);
-            double scale = move > 0 ? 1.1 : 1 / 1.1;
-            double inv_scale = 1 / scale;
-
-            switch (mode) {
-            case 1:
-                foreach (var gate in items) {
-                    gate.ChangeScale(scale, true);
-
-                    var item_pos = gate.GetPos();
-                    var delta = item_pos - pos;
-                    delta *= scale;
-                    var new_pos = delta + pos;
-                    gate.Move(new_pos, false);
-                }
-                UpdateMarker();
-                break;
-            case 2:
-                var gate2 = GetGate(item);
-                if (gate2 == null) return;
-                gate2.ChangeScale(inv_scale);
-                UpdateMarker();
-                break;
-            }
-        }
-
         public void KeyPressed(Control _, Key key) {
             // Log.Write("KeyPressed: " + item.GetType().Name + " key: " + key);
             switch (key) {
