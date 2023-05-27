@@ -13,7 +13,6 @@
     <None Remove=".gitignore" />
     <None Remove="Assets\Deleter.png" />
     <None Remove="Assets\NewItem.png" />
-    <None Remove="Assets\Resizer.png" />
     <None Remove="Assets\TrashCan.png" />
     <None Remove="Assets\vectorasd-logo.ico" />
   </ItemGroup>
