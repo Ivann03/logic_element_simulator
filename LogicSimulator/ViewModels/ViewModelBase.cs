@@ -14,10 +14,6 @@ namespace LogicSimulator.ViewModels {
             }
         }
 
-        /*
-         * Для тестирования
-         */
-
         public static Project? TopSecretGetProj() => current_proj;
     }
 }

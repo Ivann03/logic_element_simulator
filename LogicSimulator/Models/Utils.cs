@@ -15,11 +15,6 @@ using Avalonia.Controls.Shapes;
 
 namespace LogicSimulator.Models {
     public static class Utils {
-
-        /*
-         * Base64 абилка
-         */
-
         public static string Base64Encode(string plainText) {
             var plainTextBytes = Encoding.UTF8.GetBytes(plainText);
             return System.Convert.ToBase64String(plainTextBytes);
@@ -28,24 +23,19 @@ namespace LogicSimulator.Models {
             var base64EncodedBytes = System.Convert.FromBase64String(base64EncodedData);
             return Encoding.UTF8.GetString(base64EncodedBytes);
         }
-
-        /*
-         * JSON абилка
-         */
-
         public static string JsonEscape(string str) {
             StringBuilder sb = new();
             foreach (char i in str) {
                 sb.Append(i switch {
                     '"' => "\\\"",
                     '\\' => "\\\\",
-                    '$' => "{$", // Чисто по моей части ;'-}
+                    '$' => "{$",
                     _ => i
                 });
             }
             return sb.ToString();
         }
-        public static string Obj2json(object? obj) { // Велосипед ради поддержки своей сериализации классов по типу Point, SolidColorBrush и т.д.
+        public static string Obj2json(object? obj) { 
             switch (obj) {
             case null: return "null";
             case string @str: return '"' + JsonEscape(str) + '"';
@@ -95,7 +85,6 @@ namespace LogicSimulator.Models {
             return str[1] switch {
                 'p' => Point.Parse(data),
                 's' => Size.Parse(data),
-                // 'P' => new SafePoints(data.Replace('|', ' ')).Points,
                 'C' => new SolidColorBrush(Color.Parse(data)),
                 'T' => new Thickness(double.Parse(thick[0]), double.Parse(thick[1]), double.Parse(thick[2]), double.Parse(thick[3])),
                 _ => str,
@@ -120,16 +109,12 @@ namespace LogicSimulator.Models {
                     return res2;
                 case JsonValueKind.String:
                     var s = JsonHandler(@item.GetString() ?? "");
-                    // Log.Write("JS: '" + @item.GetString() + "' -> '" + s + "'");
                     return s;
                 case JsonValueKind.Number:
                     if (@item.ToString().Contains('.')) return @item.GetDouble();
-                    // Иначе это целое число
                     long a = @item.GetInt64();
                     int b = @item.GetInt32();
-                    // short c = @item.GetInt16();
                     if (a != b) return a;
-                    // if (b != c) return b;
                     return b;
                 case JsonValueKind.True: return true;
                 case JsonValueKind.False: return false;
@@ -151,11 +136,6 @@ namespace LogicSimulator.Models {
 
             return JsonHandler(data);
         }
-
-        /*
-         * XML абилка
-         */
-
         public static string XMLEscape(string str) {
             StringBuilder sb = new();
             foreach (char i in str) {
@@ -216,7 +196,6 @@ namespace LogicSimulator.Models {
                     return List2XML(@item.EnumerateArray().Select(item => (object?) item).ToList(), level);
                 case JsonValueKind.String:
                     var s = XMLEscape(@item.GetString() ?? "null");
-                    // Log.Write("XS: '" + @item.GetString() + "' -> '" + s + "'");
                     return s;
                 case JsonValueKind.Number: return "$" + @item.ToString(); // escape NUM
                 case JsonValueKind.True: return "_BOOL_yeah";

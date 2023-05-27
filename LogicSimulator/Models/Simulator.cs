@@ -41,7 +41,7 @@ namespace LogicSimulator.Models {
             stop_sim = false;
             task = Task.Run(async () => {
                 for (; ; ) {
-                    await Task.Delay(1000 / 1000); // Повышааааааееееем оборооооооотыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыы!!! 60 герц... Нет, все 1000! ;'-}
+                    await Task.Delay(1000 / 1000);
                     
                     try { Tick(); } catch (Exception e) { Log.Write("Logical crush: " + e); continue; }
 
@@ -72,13 +72,11 @@ namespace LogicSimulator.Models {
                 outs2.Add(false);
             }
 
-            // int id = items.Count;
             Meta meta = new(item, out_id);
             items.Add(meta);
             ids.Add(item, meta);
 
             Start();
-            // meta.Print();
         }
 
         public void RemoveItem(IGate item) {
@@ -114,8 +112,7 @@ namespace LogicSimulator.Models {
                 }
             }
 
-            (outs2, outs) = (outs, outs2); // Магия здесь!
-            // Log.Write("Выходы: " + Utils.Obj2json(outs));
+            (outs2, outs) = (outs, outs2); 
 
             if (comparative_test_mode) {
                 prev_state = cur_state;
@@ -145,7 +142,7 @@ namespace LogicSimulator.Models {
         public void Import(string state) {
             if (state.Length == 0) state = "0";
             outs = state.Select(x => x == '1').ToList();
-            outs2 = outs.ToList(); // clone
+            outs2 = outs.ToList();
         }
         public void Clear() {
             outs = new() { false };
@@ -154,18 +151,11 @@ namespace LogicSimulator.Models {
             ids.Clear();
         }
 
-        /*
-         * Для тестирования
-         */
-
         public void TopSecretPublicTickMethod() => Tick();
-
-        // Для комплесного решения:
 
         public Switch[] GetSwitches() => items.Select(x => x.item).OfType<Switch>().ToArray();
         public LightBulb[] GetLightBulbs() => items.Select(x => x.item).OfType<LightBulb>().ToArray();
 
-        // Для УМНОГО комплесного решения XD:
 
         private bool comparative_test_mode = false;
         private string prev_state = "0";

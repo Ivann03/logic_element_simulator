@@ -16,7 +16,7 @@ namespace LogicSimulator.Models {
 
         private readonly Project parent;
 
-        public Scheme(Project p) { // Новая схема
+        public Scheme(Project p) { 
             Created = Modified = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
             Name = "Newy";
             items = joins = Array.Empty<object>();
@@ -28,7 +28,7 @@ namespace LogicSimulator.Models {
             Delete = ReactiveCommand.Create<Unit, Unit>(_ => { FuncDelete(); return new Unit(); });
         }
 
-        public Scheme(Project p, object data) { // Импорт
+        public Scheme(Project p, object data) { 
             parent = p;
 
             if (data is not Dictionary<string, object> dict) throw new Exception("Ожидался словарь в корне схемы");

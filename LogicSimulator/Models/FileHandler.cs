@@ -44,7 +44,6 @@ namespace LogicSimulator.Models {
 
         public Project CreateProject() {
             var proj = new Project(this);
-            // projects.Add(proj); Перенесено в AppendProject
             return proj;
         }
         private Project? LoadProject(string dir, string fileName) {

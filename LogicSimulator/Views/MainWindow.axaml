@@ -45,7 +45,7 @@
 		</Menu>
 		<Grid ColumnDefinitions="*,3*">
 			<Panel Grid.Column="1">
-				<TextBlock Text="{Binding Logg}" Background="AliceBlue"/>
+				<TextBlock Text="{Binding Logg}" Background="Black"/>
 				<Canvas Tag="Scene" Name="Canvas" Background="#F0E68C"/>
 			</Panel>
 			<Grid Grid.Column="0" RowDefinitions="5*,2*">

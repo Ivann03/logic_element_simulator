@@ -320,7 +320,7 @@ namespace LogicSimulator.Views.Shapes {
             var joins = joins_out[o_num];
             Dispatcher.UIThread.InvokeAsync(() => { 
                 foreach(var join in joins)
-                    join.line.Stroke = value ? Brushes.Lime : Brushes.Black;
+                    join.line.Stroke = value ? Brushes.Black : Brushes.Black;
             });
         }
 

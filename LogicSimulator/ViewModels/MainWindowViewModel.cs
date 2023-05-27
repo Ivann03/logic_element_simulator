@@ -145,7 +145,6 @@ namespace LogicSimulator.ViewModels {
         }
 
         public void Update() {
-            //Log.Write("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n    Текущий проект:\n" + CurrentProj);
 
             map.ImportScheme();
 
@@ -156,11 +155,6 @@ namespace LogicSimulator.ViewModels {
         }
 
         public static bool CanSave { get => CurrentProj != null && CurrentProj.CanSave(); }
-
-        /*
-         * Кнопочки!
-         */
-
         public void FuncComm(string Comm) {
             switch (Comm) {
             case "Create":
@@ -178,7 +172,6 @@ namespace LogicSimulator.ViewModels {
                 break;
             case "Save":
                 map.Export();
-                // Для создания тестовых штучек:
                 File.WriteAllText("../../../for_test.json", Utils.Obj2json((map.current_scheme ?? throw new System.Exception("Чё?!")).Export()));
                 break;
             case "SaveAs":

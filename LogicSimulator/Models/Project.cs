@@ -16,16 +16,16 @@ namespace LogicSimulator.Models {
 
         private readonly FileHandler parent;
 
-        public Project(FileHandler parent) { // Новый проект
+        public Project(FileHandler parent) { 
             this.parent = parent;
             Name = "Новый проект";
             Created = Modified = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
             FileDir = null;
-            FileName = null; // FileHandler.GetProjectFileName();
+            FileName = null; 
             CreateScheme();
         }
 
-        public Project(FileHandler parent, string dir, string fileName, object data) { // Импорт
+        public Project(FileHandler parent, string dir, string fileName, object data) { 
             this.parent = parent;
             FileDir = dir;
             FileName = fileName;
@@ -93,7 +93,7 @@ namespace LogicSimulator.Models {
 
         public int CompareTo(object? obj) {
             if (obj is not Project proj) throw new ArgumentNullException(nameof(obj));
-            return (int)(proj.Modified - Modified); // Не поддерживает long :///
+            return (int)(proj.Modified - Modified);
         }
 
         public override string ToString() {
@@ -112,10 +112,6 @@ namespace LogicSimulator.Models {
             Save();
             parent.AppendProject(this);
         }
-
-        /*
-         * Для тестирования
-         */
 
         public void SetDir(string path) => FileDir = path;
     }
