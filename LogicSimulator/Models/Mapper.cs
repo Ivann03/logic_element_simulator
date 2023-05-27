@@ -9,7 +9,7 @@ using Avalonia.Controls.Shapes;
 using Avalonia.Media;
 using Avalonia.LogicalTree;
 using System.Linq;
-using Button = LogicSimulator.Views.Shapes.Button;
+using Button = LogicSimulator.Views.Shapes.Switch;
 using Avalonia.Input;
 
 namespace LogicSimulator.Models {
@@ -65,19 +65,14 @@ namespace LogicSimulator.Models {
                 1 => new OR_2(),
                 2 => new NOT(),
                 3 => new XOR_2(),
-                4 => new MUX_3(),
-                5 => new Switch(),
-                6 => new Button(),
-                7 => new LightBulb(),
-                8 => new NAND_2(),
-                9 => new FlipFlop(),
-                10 => new OR_8(),
-                11 => new AND_8(),
+                4 => new Switch(),
+                5 => new LightBulb(),
+                6 => new MUX_3(),
                 _ => new AND_2(),
             };
         }
 
-        public IGate[] item_types = Enumerable.Range(0, 12).Select(CreateItem).ToArray();
+        public IGate[] item_types = Enumerable.Range(0, 7).Select(CreateItem).ToArray();
 
         public IGate GenSelectedItem() => CreateItem(selected_item);
 
