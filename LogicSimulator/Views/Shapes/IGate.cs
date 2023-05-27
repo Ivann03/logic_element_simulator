@@ -14,7 +14,6 @@ namespace LogicSimulator.Views.Shapes {
         public Size GetSize();
         public Size GetBodySize();
         public void Move(Point pos, bool global = false);
-        public void Resize(Size size, bool global = false);
         public void ChangeScale(double scale, bool global = false);
         public void SavePose();
         public Point GetPose();

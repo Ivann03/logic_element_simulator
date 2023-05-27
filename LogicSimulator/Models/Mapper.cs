@@ -149,7 +149,7 @@ namespace LogicSimulator.Models {
             return tag switch {
                 "Scene" => 1,
                 "Body" => 2,
-                "Resizer" => 3,
+                //"Resizer" => 3,
                 "Deleter" => 4,
                 "In" => 5,
                 "Out" => 6,
@@ -213,10 +213,10 @@ namespace LogicSimulator.Models {
             case 1:
                 SaveAllPoses();
                 break;
-            case 3:
-                if (moved_item == null) break;
-                item_old_size = moved_item.GetBodySize();
-                break;
+            //case 3:
+            //    if (moved_item == null) break;
+            //    item_old_size = moved_item.GetBodySize();
+            //    break;
             case 5 or 6 or 7:
                 if (marker_circle == null) break;
                 var gate = GetGate(marker_circle) ?? throw new Exception("Чё?!"); // Такого не бывает
@@ -322,12 +322,6 @@ namespace LogicSimulator.Models {
                 if (moved_item == null) break;
                 var new_pos = item_old_pos + delta;
                 moved_item.Move(new_pos);
-                UpdateMarker();
-                break;
-            case 3:
-                if (moved_item == null) break;
-                var new_size = item_old_size + new Size(delta.X, delta.Y);
-                moved_item.Resize(new_size);
                 UpdateMarker();
                 break;
             case 5 or 6 or 7:
