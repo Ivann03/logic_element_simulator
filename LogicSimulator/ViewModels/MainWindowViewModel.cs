@@ -145,14 +145,14 @@ namespace LogicSimulator.ViewModels {
         }
 
         public void Update() {
-            Log.Write("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n    Текущий проект:\n" + CurrentProj);
+            //Log.Write("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n    Текущий проект:\n" + CurrentProj);
 
             map.ImportScheme();
 
             this.RaisePropertyChanged(new(nameof(ProjName)));
             this.RaisePropertyChanged(new(nameof(Schemes)));
             this.RaisePropertyChanged(new(nameof(CanSave)));
-            if (mw != null) mw.Width++; // ГОРАААААААААААААЗДО больше толку, чем от всех этих НЕРАБОЧИХ через раз RaisePropertyChanged
+            if (mw != null) mw.Width++;
         }
 
         public static bool CanSave { get => CurrentProj != null && CurrentProj.CanSave(); }
