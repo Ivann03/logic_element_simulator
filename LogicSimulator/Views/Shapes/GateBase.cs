@@ -72,11 +72,11 @@ namespace LogicSimulator.Views.Shapes {
                 foreach (var type in side) {
                     if (type < 0) continue;
 
-                    var newy = new Line() { Tag = "Pin", ZIndex = 1, Stroke = Brushes.Gray };
+                    var newy = new Line() { Tag = "Pin", ZIndex = 1, Stroke = Brushes.Black };
                     list.Add(newy);
                     canv.Children.Add(newy);
 
-                    var newy2 = new Ellipse() { Tag = type == 0 ? "In" : type == 1 ? "Out" : "IO", ZIndex = 2, Stroke = Brushes.Gray, Fill = new SolidColorBrush(Color.Parse("#0000")) };
+                    var newy2 = new Ellipse() { Tag = type == 0 ? "In" : type == 1 ? "Out" : "IO", ZIndex = 2, Stroke = Brushes.Black, Fill = new SolidColorBrush(Color.Parse("#0000")) };
                     list2.Add(newy2);
                     canv.Children.Add(newy2);
                 }
@@ -318,9 +318,9 @@ namespace LogicSimulator.Views.Shapes {
 
         public void SetJoinColor(int o_num, bool value) {
             var joins = joins_out[o_num];
-            Dispatcher.UIThread.InvokeAsync(() => { // Ох, знакомая головная боль с андроида, где даже Toast за пределами главного потока не вызовешь :/ XD :D
+            Dispatcher.UIThread.InvokeAsync(() => { 
                 foreach(var join in joins)
-                    join.line.Stroke = value ? Brushes.Lime : Brushes.DarkGray;
+                    join.line.Stroke = value ? Brushes.Lime : Brushes.Black;
             });
         }
 
@@ -331,10 +331,6 @@ namespace LogicSimulator.Views.Shapes {
             return false;
         }
 
-        /*
-         * Обработка пинов
-         */
-
         public Distantor GetPin(Ellipse finded) {
             int n = 0;
             foreach (var pin in pins) {
@@ -344,31 +340,13 @@ namespace LogicSimulator.Views.Shapes {
             throw new Exception("Так не бывает");
         }
 
-        /* Внимание! TransformedBounds в принципе не обновляется, когда мне это надо, сколько бы времени
-         * не прошло, ПО ЭТОМУ высчет центра окружности через TransformedBounds отстаёт!
-         * По этому от метода Center, что я сделал в Utils, придётся отказаться XD
-         * 
-        protected override void OnPropertyChanged<T>(AvaloniaPropertyChangedEventArgs<T> change) {
-            base.OnPropertyChanged(change);
-            if (change.Property.Name == "TransformedBounds")
-                Log.Write("Что-то изменилось " + change.NewValue.Value);
-            else
-                Log.Write("Что-то изменилось " + change.Property.Name + " " + change.NewValue.Value);
-        }*/
-
         Thickness[] ellipse_margins = Array.Empty<Thickness>();
 
         public Point GetPinPos(int n) {
-            // var pin = pins[n];
-            // return pin.Center(ref_point); // Смотрите Utils ;'-} Там круто сделан метод (но он по факту и оказался причиной бага, т.к. TransformedBounds ОПАЗДЫВАААААЕЕЕЕЕЕЕЕЕЕЕЕЕЕТ!)
             var m = ellipse_margins[n];
             double R2 = EllipseSize / 2;
             return new Point(Margin.Left + m.Left + R2, Margin.Top + m.Top + R2);
         }
-
-        /*
-         * Мозги
-         */
 
         public int[][] GetPinData() => pin_data;
 
@@ -388,8 +366,7 @@ namespace LogicSimulator.Views.Shapes {
                         var p = item.parent;
                         Meta meta = ids[p];
                         int[] data = p.GetPinData()[item.num];
-                        me.ins[i] = meta.outs[data[1]];
-                        // Log.Write("ins: " + Utils.Obj2json(me.ins) + " | " + data[1]);
+                        me.ins[i] = meta.outs[data[1]];                       
                     }
                 }
                 if (join.B.parent == this) {
@@ -399,15 +376,10 @@ namespace LogicSimulator.Views.Shapes {
                         Meta meta = ids[p];
                         int[] data = p.GetPinData()[item.num];
                         me.ins[i] = meta.outs[data[1]];
-                        // Log.Write("ins: " + Utils.Obj2json(me.ins) + " | " + data[1]);
                     }
                 }
             }
         }
-
-        /*
-         * Экспорт, но может быть прокачан в дочернем классе, если есть что добавить
-         */
 
         public abstract int TypeId { get; }
 
@@ -472,9 +444,6 @@ namespace LogicSimulator.Views.Shapes {
         public virtual void ExtraImport(string key, object extra) {
             Log.Write(key + "-запись элемента не поддерживается");
         }
-
-        /* Для тестирования */
-
         public Ellipse SecretGetPin(int n) => pins[n];
     }
 }

@@ -8,7 +8,7 @@
 			 Tag="Gate">
 	
 	<Canvas Tag="Gate">
-		<Border Tag="Body" Margin="25 10" Background="Gray" BorderThickness="{Binding BodyStrokeSize}" BorderBrush="black" Width="50" Height="50" CornerRadius="50">
+		<Border Tag="Body" Margin="25 10" Background="Black" BorderThickness="{Binding BodyStrokeSize}" BorderBrush="black" Width="50" Height="50" CornerRadius="50">
 		</Border>
 	</Canvas>
 </UserControl>

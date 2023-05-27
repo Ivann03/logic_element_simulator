@@ -14,7 +14,7 @@ using Avalonia.Input;
 
 namespace LogicSimulator.Models {
     public class Mapper {
-        readonly Line marker = new() { Tag = "Marker", ZIndex = 2, IsVisible = false, Stroke = Brushes.YellowGreen, StrokeThickness = 3 };
+        readonly Line marker = new() { Tag = "Marker", ZIndex = 2, IsVisible = false, Stroke = Brushes.Black, StrokeThickness = 3 };
         readonly Rectangle marker2 = new() { Tag = "Marker", Classes = new("anim"), ZIndex = 2, IsVisible = false, Stroke = Brushes.MediumAquamarine, StrokeThickness = 3 };
         
         public Line Marker { get => marker; }
@@ -186,7 +186,7 @@ namespace LogicSimulator.Models {
         Point moved_pos;
         IGate? moved_item;
         Point item_old_pos;
-        Size item_old_size;
+        //Size item_old_size;
 
         Ellipse? marker_circle;
         Distantor? start_dist;
@@ -281,14 +281,14 @@ namespace LogicSimulator.Models {
 
                 if (marker_circle != null && marker_circle != @ellipse) { // На случай моментального перехода курсором с одного кружка на другой
                     marker_circle.Fill = new SolidColorBrush(Color.Parse("#0000"));
-                    marker_circle.Stroke = Brushes.Gray;
+                    marker_circle.Stroke = Brushes.Black;
                 }
                 marker_circle = @ellipse;
-                @ellipse.Fill = Brushes.Lime;
-                @ellipse.Stroke = Brushes.Green;
+                @ellipse.Fill = Brushes.Red;
+                @ellipse.Stroke = Brushes.Red;
             } else if (marker_circle != null) {
                 marker_circle.Fill = new SolidColorBrush(Color.Parse("#0000"));
-                marker_circle.Stroke = Brushes.Gray;
+                marker_circle.Stroke = Brushes.Black;
                 marker_circle = null;
             }
 
