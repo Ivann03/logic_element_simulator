@@ -42,9 +42,9 @@
 				<MenuItem Header="Выйти в лаунчер" Command="{Binding Comm}" CommandParameter="ExitToLauncher"/>
 				<MenuItem Header="Выйти" Command="{Binding Comm}" CommandParameter="Exit"/>
 			</MenuItem>
-			<MenuItem Header="Опции">
+			<!--<MenuItem Header="Опции">
 				<CheckBox IsChecked="{Binding LockSelfConnect}">Блокировать самоподключку</CheckBox>
-			</MenuItem>
+			</MenuItem>-->
 		</Menu>
 		<Grid ColumnDefinitions="*,3*,*">
 			<Panel Grid.Column="1">

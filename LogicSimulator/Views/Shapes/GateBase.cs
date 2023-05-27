@@ -102,15 +102,6 @@ namespace LogicSimulator.Views.Shapes {
 
         private double MinW => BodyRadius.TopLeft * 1.5 + (EllipseSize + BaseFraction * 2) * (Sides[0].Length.Max(Sides[3].Length).Max(2) - 0.8);
         private double MinH => BodyRadius.TopLeft * 1.5 + (EllipseSize + BaseFraction * 2) * (Sides[1].Length.Max(Sides[2].Length).Max(2) - 0.8);
-        public void ChangeScale(double scale, bool global = false) {
-            var fix = GetPos();
-            base_size *= scale;
-            width *= scale;
-            height *= scale;
-            Move(fix, global);
-            RecalcSizes();
-            UpdateJoins(global);
-        }
 
         public Point GetPos() => new(Margin.Left + UC_Width / 2, Margin.Top + UC_Height / 2);
         public Size GetSize() => new(Width, Height);
@@ -126,7 +117,7 @@ namespace LogicSimulator.Views.Shapes {
          */
 
         protected double base_size = 25;
-        protected double width = 30 * 3; // Размеры тела, а не всего UserControl
+        protected double width = 29 * 3; // Размеры тела, а не всего UserControl
         protected double height = 30 * 3;
 
         public double BaseSize => base_size;

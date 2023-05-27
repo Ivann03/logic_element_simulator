@@ -16,10 +16,6 @@ namespace LogicSimulator.Views.Shapes {
 
         protected override void Init() => InitializeComponent();
 
-        /*
-         * Мозги
-         */
-
         public void Brain(ref bool[] ins, ref bool[] outs) => outs[0] = ins[0] && ins[1];
     }
 }

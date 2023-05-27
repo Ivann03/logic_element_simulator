@@ -213,10 +213,6 @@ namespace LogicSimulator.Models {
             case 1:
                 SaveAllPoses();
                 break;
-            //case 3:
-            //    if (moved_item == null) break;
-            //    item_old_size = moved_item.GetBodySize();
-            //    break;
             case 5 or 6 or 7:
                 if (marker_circle == null) break;
                 var gate = GetGate(marker_circle) ?? throw new Exception("Чё?!"); // Такого не бывает
