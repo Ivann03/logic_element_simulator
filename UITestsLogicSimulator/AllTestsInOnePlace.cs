@@ -12,7 +12,7 @@ namespace UITestsLogicSimulator {
     public class AllTestsInOnePlace {
         private readonly LauncherWindow launcherWindow = AvaloniaApp.GetMainWindow();
         private readonly MainWindow mainWindow = LauncherWindowViewModel.GetMW;
-        private readonly Mapper map = ViewModelBase.map;
+        private readonly Fuction map = ViewModelBase.map;
 
         private readonly Canvas canv;
         private readonly ListBox gates;
@@ -21,7 +21,7 @@ namespace UITestsLogicSimulator {
 
         bool first_log = true;
         readonly string path = "../../../TestLog.txt";
-#pragma warning disable IDE0051 // Удалите неиспользуемые закрытые члены
+#pragma warning disable IDE0051 
         private void Log(string? message) {
             message ??= "null";
             if (first_log) {
@@ -34,26 +34,21 @@ namespace UITestsLogicSimulator {
             var buttons = launcherWindow.GetVisualDescendants().OfType<Button>();
             var new_proj = buttons.First(x => (string) x.Content == "Создать новый проект");
             new_proj.Command.Execute(null);
-            // Только таки имбовая возможность создать проект, но никогда не определять ему файл
-            // сохранения, от чего данные unit-test'ы никогда не появлияют на файловую систему :D
-
+            
             var vis_arr = mainWindow.GetVisualDescendants();
             canv = vis_arr.OfType<Canvas>().First(x => (string?) x.Tag == "Scene");
-            // canv.PointerEnter
-            // И тут выясняется, что я в принципе не могу имитировать клики по холсту, по этому
-            // придётся воздействовать на приложение через Mapper на прямую.
-
+           
             gates = vis_arr.OfType<ListBox>().First(x => x.Name == "Gates");
-            map.sim.Stop(); // чтобы в холостую не работало, я сам задам количество тиков методом Ticks здесь
+            map.sim.Stop(); 
         }
 
 
 
-        private IGate? Click(Control target, double x, double y) {
+        private Func? Click(Control target, double x, double y) {
             var pos = new Point(x, y);
             map.Press(target, pos);
             int mode = map.Release(target, pos);
-            // Log("Tapped: " + map.tapped + " | " + mode);
+           
             if (map.tapped && mode == 1) {
                 var tpos = map.tap_pos;
                 var newy = map.GenSelectedItem();
@@ -66,8 +61,7 @@ namespace UITestsLogicSimulator {
         private void Move(Control a, Control b) {
             map.Move(a, new());
             map.Press(a, new());
-            /*int mode = */ map.Release(b, new(100, 100), false); // В себе уже имеет map.Move(target, pos2)
-            // Log("Moved: " + map.tapped + " | " + mode);
+            map.Release(b, new(100, 100), false); 
         }
         private string Export() {
             map.Export();
@@ -76,13 +70,13 @@ namespace UITestsLogicSimulator {
 
             scheme.Created = 123;
             scheme.Modified = 456;
-            return Utils.Obj2json(scheme.Export());
+            return Plugin.Obj2json(scheme.Export());
         }
-        private void SelectGate(int id) => gates.SelectedIndex = id; // Хоть что-то хотя бы возможно сделать чисто через визуальную часть, а не в обход обёрток, нюхающих ивенты ;'-}
+        private void SelectGate(int id) => gates.SelectedIndex = id; 
         private void Ticks(int count) {
             while (count-- > 0) map.sim.TopSecretPublicTickMethod();
         }
-        private static void SaveProject() { // Чтобы только посмотреть, что всё соединилось как надо
+        private static void SaveProject() {
             var proj = ViewModelBase.TopSecretGetProj() ?? throw new Exception("А где проект? :/");
             proj.SetDir("../../..");
             proj.FileName = "tested";
@@ -96,9 +90,9 @@ namespace UITestsLogicSimulator {
             button2.Command.Execute(null);
         }
         private void ImportScheme(string data) {
-            object yeah = Utils.Json2obj(data) ?? new Exception("Что-то не то в JSON");
+            object yeah = Plugin.Json2obj(data) ?? new Exception("Что-то не то в JSON");
             var proj = ViewModelBase.TopSecretGetProj() ?? throw new Exception("А где проект? :/");
-            Scheme clone = new(proj, yeah);
+            Diagram clone = new(proj, yeah);
             var scheme = map.current_scheme ?? throw new Exception("А где схема? :/");
             scheme.Update(clone.items, clone.joins, clone.states);
             scheme.Name = clone.Name;
@@ -112,7 +106,7 @@ namespace UITestsLogicSimulator {
             sim.ComparativeTestMode = true;
 
             var inputs = sim.GetSwitches();
-            var outputs = sim.GetLightBulbs();
+            var outputs = sim.GetEXITs();
             int L = inputs.Length;
             int steps = 1 << L;
 
@@ -138,7 +132,7 @@ namespace UITestsLogicSimulator {
             SelectGate(0); // AND-gate
             Task.Delay(1).GetAwaiter().GetResult();
 
-            IGate? gate = Click(canv, 200, 200);
+            Func? gate = Click(canv, 200, 200);
             Assert.NotNull(gate);
             var data = Export();
             Assert.Equal("{\"name\": \"Newy\", \"created\": 123, \"modified\": 456, \"items\": [{\"id\": 0, \"pos\": \"$p$200,200\", \"size\": \"$s$71,71\", \"base_size\": 25}], \"joins\": [], \"states\": \"00\"}", data);
@@ -146,7 +140,7 @@ namespace UITestsLogicSimulator {
             SelectGate(3); // XOR-gate
             Task.Delay(1).GetAwaiter().GetResult();
 
-            IGate? gate2 = Click(canv, 300, 300);
+            Func? gate2 = Click(canv, 300, 300);
             Assert.NotNull(gate2);
 
             Move(gate.SecretGetPin(2), gate2.SecretGetPin(0)); // Соединяем gate и gate2
@@ -154,12 +148,12 @@ namespace UITestsLogicSimulator {
             data = Export();
             Assert.Equal("{\"name\": \"Newy\", \"created\": 123, \"modified\": 456, \"items\": [{\"id\": 0, \"pos\": \"$p$200,200\", \"size\": \"$s$71,71\", \"base_size\": 25}, {\"id\": 3, \"pos\": \"$p$300,300\", \"size\": \"$s$71,71\", \"base_size\": 25}], \"joins\": [[0, 2, \"Out\", 1, 0, \"In\"]], \"states\": \"000\"}", data);
 
-            SelectGate(5); // Switch-gate
+            SelectGate(5); // Entry-gate
             Task.Delay(1).GetAwaiter().GetResult();
 
-            IGate? button = Click(canv, 100, 150);
-            IGate? button2 = Click(canv, 100, 250);
-            IGate? button3 = Click(canv, 100, 350);
+            Func? button = Click(canv, 100, 150);
+            Func? button2 = Click(canv, 100, 250);
+            Func? button3 = Click(canv, 100, 350);
             Assert.NotNull(button);
             Assert.NotNull(button2);
             Assert.NotNull(button3);
@@ -168,18 +162,18 @@ namespace UITestsLogicSimulator {
             Move(button2.SecretGetPin(0), gate.SecretGetPin(1));
             Move(button3.SecretGetPin(0), gate2.SecretGetPin(1));
 
-            SelectGate(7); // LightBulb-gate
+            SelectGate(7); // Exit-gate
             Task.Delay(1).GetAwaiter().GetResult();
 
-            IGate? ball = Click(canv, 400, 300);
+            Func? ball = Click(canv, 400, 300);
             Assert.NotNull(ball);
 
             Move(gate2.SecretGetPin(2), ball.SecretGetPin(0));
 
-            var input = (Switch) button;
-            var input2 = (Switch) button2;
-            var input3 = (Switch) button3;
-            var output = (LightBulb) ball;
+            var input = (ENTRY) button;
+            var input2 = (ENTRY) button2;
+            var input3 = (ENTRY) button3;
+            var output = (EXIT) ball;
 
             StringBuilder sb = new();
             for (int i = 0; i < 8; i++) {
@@ -230,10 +224,6 @@ namespace UITestsLogicSimulator {
             res = ComplexSolution();
             Assert.Equal("100000_t1|010000_t10|010000_t11|001000_t11|010000_t10|001000_t10|001000_t11|000100_t11|010000_t9|001000_t10|001000_t11|000100_t11|001000_t10|000100_t10|000100_t11|000010_t11|010000_t8|001000_t10|001000_t11|000100_t11|001000_t10|000100_t10|000100_t11|000010_t11|001000_t9|000100_t10|000100_t11|000010_t11|000100_t10|000010_t10|000010_t11|000001_t11", res);
 
-            /* Log("res: " + res);
-            Log("Export: " + Export());
-            Log("ОК!");
-            SaveProject();*/
         }
     }
 }
