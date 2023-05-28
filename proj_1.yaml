@@ -1,0 +1,332 @@
+---
+name: "Тестовый проект"
+created: 1684849867
+modified: 1684850097
+schemes:
+	-
+		name: "Проверка MUX"
+		created: 1684849867
+		modified: 1684849961
+		items:
+			-
+				id: 4
+				pos: $p$416,350
+				size: $s$111,232
+				base_size: 30.250000000000018
+			-
+				id: 5
+				pos: $p$127,200
+				size: $s$65,65
+				base_size: 22.727272727272727
+				state: true
+			-
+				id: 5
+				pos: $p$126,266
+				size: $s$65,65
+				base_size: 22.727272727272727
+				state: false
+			-
+				id: 5
+				pos: $p$126,331
+				size: $s$65,65
+				base_size: 22.727272727272727
+				state: true
+			-
+				id: 5
+				pos: $p$128,397
+				size: $s$65,65
+				base_size: 22.727272727272727
+				state: true
+			-
+				id: 5
+				pos: $p$126,465
+				size: $s$65,65
+				base_size: 22.727272727272727
+				state: true
+			-
+				id: 5
+				pos: $p$127,530
+				size: $s$65,65
+				base_size: 22.727272727272727
+				state: false
+			-
+				id: 5
+				pos: $p$129,595
+				size: $s$65,65
+				base_size: 22.727272727272727
+				state: true
+			-
+				id: 5
+				pos: $p$122,134
+				size: $s$65,65
+				base_size: 22.727272727272727
+				state: false
+			-
+				id: 5
+				pos: $p$289,658
+				size: $s$65,65
+				base_size: 22.727272727272727
+				state: true
+			-
+				id: 5
+				pos: $p$401,664
+				size: $s$65,65
+				base_size: 22.727272727272727
+				state: false
+			-
+				id: 5
+				pos: $p$510,665
+				size: $s$65,65
+				base_size: 22.727272727272727
+				state: false
+			-
+				id: 7
+				pos: $p$670,336
+				size: $s$139,139
+				base_size: 48.71792750000004
+				state: true
+		joins:
+			-
+				- 12
+				- 0
+				- In
+				- 0
+				- 8
+				- Out
+			-
+				- 1
+				- 0
+				- Out
+				- 0
+				- 1
+				- In
+			-
+				- 0
+				- 2
+				- In
+				- 2
+				- 0
+				- Out
+			-
+				- 3
+				- 0
+				- Out
+				- 0
+				- 3
+				- In
+			-
+				- 0
+				- 4
+				- In
+				- 4
+				- 0
+				- Out
+			-
+				- 5
+				- 0
+				- Out
+				- 0
+				- 5
+				- In
+			-
+				- 0
+				- 6
+				- In
+				- 6
+				- 0
+				- Out
+			-
+				- 7
+				- 0
+				- Out
+				- 0
+				- 7
+				- In
+			-
+				- 0
+				- 0
+				- In
+				- 8
+				- 0
+				- Out
+			-
+				- 9
+				- 0
+				- Out
+				- 0
+				- 9
+				- In
+			-
+				- 0
+				- 10
+				- In
+				- 10
+				- 0
+				- Out
+			-
+				- 11
+				- 0
+				- Out
+				- 0
+				- 11
+				- In
+		states: "0110111010100"
+	-
+		name: "Ещё схема"
+		created: 1684849994
+		modified: 1684850097
+		items:
+			-
+				id: 9
+				pos: $p$427,208
+				size: $s$139,161
+				base_size: 48.717927500000044
+				state: "0.0.0.1.0.1"
+			-
+				id: 6
+				pos: $p$167,128
+				size: $s$71,71
+				base_size: 25
+			-
+				id: 6
+				pos: $p$155,212
+				size: $s$71,71
+				base_size: 25
+			-
+				id: 6
+				pos: $p$157,284
+				size: $s$71,71
+				base_size: 25
+			-
+				id: 7
+				pos: $p$683,149
+				size: $s$71,71
+				base_size: 25
+				state: true
+			-
+				id: 7
+				pos: $p$689,210
+				size: $s$71,71
+				base_size: 25
+				state: false
+			-
+				id: 7
+				pos: $p$691,277
+				size: $s$71,71
+				base_size: 25
+				state: true
+			-
+				id: 9
+				pos: $p$447,523
+				size: $s$139,161
+				base_size: 48.717927500000044
+				state: "1.0.0.1.1.0"
+			-
+				id: 6
+				pos: $p$178,588
+				size: $s$71,71
+				base_size: 25
+			-
+				id: 7
+				pos: $p$701,457
+				size: $s$71,71
+				base_size: 25
+				state: true
+			-
+				id: 7
+				pos: $p$701,525
+				size: $s$71,71
+				base_size: 25
+				state: true
+			-
+				id: 7
+				pos: $p$703,598
+				size: $s$71,71
+				base_size: 25
+				state: false
+		joins:
+			-
+				- 4
+				- 0
+				- In
+				- 0
+				- 3
+				- Out
+			-
+				- 0
+				- 4
+				- Out
+				- 5
+				- 0
+				- In
+			-
+				- 6
+				- 0
+				- In
+				- 0
+				- 5
+				- Out
+			-
+				- 1
+				- 0
+				- Out
+				- 0
+				- 0
+				- In
+			-
+				- 2
+				- 0
+				- Out
+				- 0
+				- 1
+				- In
+			-
+				- 0
+				- 2
+				- In
+				- 3
+				- 0
+				- Out
+			-
+				- 9
+				- 0
+				- In
+				- 7
+				- 3
+				- Out
+			-
+				- 7
+				- 0
+				- In
+				- 7
+				- 4
+				- Out
+			-
+				- 7
+				- 4
+				- Out
+				- 10
+				- 0
+				- In
+			-
+				- 7
+				- 5
+				- Out
+				- 7
+				- 1
+				- In
+			-
+				- 11
+				- 0
+				- In
+				- 7
+				- 5
+				- Out
+			-
+				- 8
+				- 0
+				- Out
+				- 7
+				- 2
+				- In
+		states: "01010001100"
