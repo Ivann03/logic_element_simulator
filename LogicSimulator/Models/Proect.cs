@@ -5,18 +5,18 @@ using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace LogicSimulator.Models {
-    public class Project: IComparable {
+    public class Proect: IComparable {
         public string Name { get; private set; }
         public long Created;
         public long Modified;
 
-        public ObservableCollection<Scheme> schemes = new();
+        public ObservableCollection<Diagram> schemes = new();
         public string? FileDir { get; private set; }
         public string? FileName { get; set; }
 
-        private readonly FileHandler parent;
+        private readonly Treatment parent;
 
-        public Project(FileHandler parent) { 
+        public Proect(Treatment parent) { 
             this.parent = parent;
             Name = "Новый проект";
             Created = Modified = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
@@ -25,7 +25,7 @@ namespace LogicSimulator.Models {
             CreateScheme();
         }
 
-        public Project(FileHandler parent, string dir, string fileName, object data) { 
+        public Proect(Treatment parent, string dir, string fileName, object data) { 
             this.parent = parent;
             FileDir = dir;
             FileName = fileName;
@@ -48,27 +48,27 @@ namespace LogicSimulator.Models {
             if (value4 is not List<object> arr) throw new Exception("Списко схем проекта - не массив строк");
             foreach (var s_data in arr) {
                 if (s_data == null) throw new Exception("Одно из файловых имёт списка схем проекта - null");
-                var scheme = new Scheme(this, s_data);
+                var scheme = new Diagram(this, s_data);
                 schemes.Add(scheme);
             }
         }
 
 
 
-        public Scheme CreateScheme() {
-            var scheme = new Scheme(this);
+        public Diagram CreateScheme() {
+            var scheme = new Diagram(this);
             schemes.Add(scheme);
             Save();
             return scheme;
         }
-        public Scheme AddScheme(Scheme? prev) {
-            var scheme = new Scheme(this);
+        public Diagram AddScheme(Diagram? prev) {
+            var scheme = new Diagram(this);
             int pos = prev == null ? 0 : schemes.IndexOf(prev) + 1;
             schemes.Insert(pos, scheme);
             Save();
             return scheme;
         }
-        public void RemoveScheme(Scheme me) {
+        public void RemoveScheme(Diagram me) {
             schemes.Remove(me);
             Save();
         }
@@ -76,7 +76,7 @@ namespace LogicSimulator.Models {
             foreach (var scheme in schemes) scheme.UpdateProps();
         }
 
-        public Scheme GetFirstScheme() => schemes[0];
+        public Diagram GetFirstScheme() => schemes[0];
 
 
 
@@ -89,10 +89,10 @@ namespace LogicSimulator.Models {
             };
         }
 
-        public void Save() => FileHandler.SaveProject(this);
+        public void Save() => Treatment.SaveProject(this);
 
         public int CompareTo(object? obj) {
-            if (obj is not Project proj) throw new ArgumentNullException(nameof(obj));
+            if (obj is not Proect proj) throw new ArgumentNullException(nameof(obj));
             return (int)(proj.Modified - Modified);
         }
 
@@ -108,7 +108,7 @@ namespace LogicSimulator.Models {
 
         public bool CanSave() => FileDir != null;
         public void SaveAs(Window mw) {
-            FileDir = FileHandler.RequestProjectPath(mw);
+            FileDir = Treatment.RequestProjectPath(mw);
             Save();
             parent.AppendProject(this);
         }

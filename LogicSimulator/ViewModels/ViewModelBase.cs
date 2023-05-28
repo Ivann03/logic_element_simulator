@@ -3,9 +3,9 @@ using ReactiveUI;
 
 namespace LogicSimulator.ViewModels {
     public class ViewModelBase: ReactiveObject {
-        public readonly static Mapper map = new();
-        private static Project? current_proj;
-        protected static Project? CurrentProj {
+        public readonly static Fuctoin map = new();
+        private static Proect? current_proj;
+        protected static Proect? CurrentProj {
             get => current_proj;
             set {
                 if (value == null) return;
@@ -14,6 +14,6 @@ namespace LogicSimulator.ViewModels {
             }
         }
 
-        public static Project? TopSecretGetProj() => current_proj;
+        public static Proect? TopSecretGetProj() => current_proj;
     }
 }

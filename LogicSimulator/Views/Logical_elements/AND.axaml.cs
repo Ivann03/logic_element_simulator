@@ -1,8 +1,8 @@
 using Avalonia.Controls;
 using System.ComponentModel;
 
-namespace LogicSimulator.Views.Shapes {
-    public partial class AND_2: GateBase, IGate, INotifyPropertyChanged {
+namespace LogicSimulator.Views.Logical_elements {
+    public partial class AND: GateBase, IGate, INotifyPropertyChanged {
         public override int TypeId => 0;
 
         public override UserControl GetSelf() => this;

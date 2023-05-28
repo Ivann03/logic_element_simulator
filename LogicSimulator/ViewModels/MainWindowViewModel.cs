@@ -3,7 +3,7 @@ using Avalonia.Controls.Presenters;
 using Avalonia.Input;
 using LogicSimulator.Models;
 using LogicSimulator.Views;
-using LogicSimulator.Views.Shapes;
+using LogicSimulator.Views.Logical_elements;
 using ReactiveUI;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -87,10 +87,6 @@ namespace LogicSimulator.ViewModels {
         public static IGate[] ItemTypes { get => map.item_types; }
         public static int SelectedItem { get => map.SelectedItem; set => map.SelectedItem = value; }
 
-        /*
-         * Обработка той самой панели со схемами проекта
-         */
-
         Grid? cur_grid;
         TextBlock? old_b_child;
         object? old_b_child_tag;
@@ -98,7 +94,7 @@ namespace LogicSimulator.ViewModels {
 
         public static string ProjName { get => CurrentProj == null ? "???" : CurrentProj.Name; }
 
-        public static ObservableCollection<Scheme> Schemes { get => CurrentProj == null ? new() : CurrentProj.schemes; }
+        public static ObservableCollection<Diagram> Schemes { get => CurrentProj == null ? new() : CurrentProj.schemes; }
 
 
 
@@ -124,19 +120,18 @@ namespace LogicSimulator.ViewModels {
             old_b_child_tag = tb.Tag;
             prev_scheme_name = tb.Text;
 
-            var newy = new TextBox { Text = tb.Text }; // Изи блиц-транcформация в одну строчку ;'-}
+            var newy = new TextBox { Text = tb.Text }; 
 
-            // Log.Write("Tag: " + tb.Tag);
+            
             cur_grid.Children[0] = newy;
-            //Log.Write("Tag: " + tb.Tag); // КААААК?!?!?!? Почему пропажа предка удаляет Tag?!
+            
 
             newy.KeyUp += (object? sender, KeyEventArgs e) => {
                 if (e.Key != Key.Return) return;
 
                 if (newy.Text != prev_scheme_name) {
-                    // tb.Text = newy.Text;
                     if ((string?) tb.Tag == "p_name") CurrentProj?.ChangeName(newy.Text);
-                    else if (old_b_child_tag is Scheme scheme) scheme.ChangeName(newy.Text);
+                    else if (old_b_child_tag is Diagram scheme) scheme.ChangeName(newy.Text);
                 }
 
                 cur_grid.Children[0] = tb;
@@ -172,7 +167,7 @@ namespace LogicSimulator.ViewModels {
                 break;
             case "Save":
                 map.Export();
-                File.WriteAllText("../../../for_test.json", Utils.Obj2json((map.current_scheme ?? throw new System.Exception("Чё?!")).Export()));
+                File.WriteAllText("../../../for_test.json", Plugin.Obj2json((map.current_scheme ?? throw new System.Exception("Чё?!")).Export()));
                 break;
             case "SaveAs":
                 map.Export();
@@ -197,6 +192,6 @@ namespace LogicSimulator.ViewModels {
 
         public ReactiveCommand<Unit, Unit> NewItem { get; }
 
-        public static bool LockSelfConnect { get => map.lock_self_connect; set => map.lock_self_connect = value; }
+        //public static bool LockSelfConnect { get => map.lock_self_connect; set => map.lock_self_connect = value; }
     }
 }

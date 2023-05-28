@@ -1,13 +1,13 @@
 ﻿using Avalonia;
-using LogicSimulator.Views.Shapes;
+using LogicSimulator.Views.Logical_elements;
 
 namespace LogicSimulator.Models {
-    public class Distantor {
+    public class Locontrol {
         public readonly int num;
         public IGate parent;
         public readonly string tag;
 
-        public Distantor(IGate parent, int n, string tag) {
+        public Locontrol(IGate parent, int n, string tag) {
             this.parent = parent;
             num = n; 
             this.tag = tag;

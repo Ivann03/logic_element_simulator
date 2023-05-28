@@ -4,7 +4,7 @@ using Avalonia.VisualTree;
 using LogicSimulator.Models;
 using LogicSimulator.ViewModels;
 using LogicSimulator.Views;
-using LogicSimulator.Views.Shapes;
+using LogicSimulator.Views.Logical_elements;
 using System.Text;
 using Button = Avalonia.Controls.Button;
 
@@ -12,7 +12,7 @@ namespace UITestsLogicSimulator {
     public class AllTestsInOnePlace {
         private readonly LauncherWindow launcherWindow = AvaloniaApp.GetMainWindow();
         private readonly MainWindow mainWindow = LauncherWindowViewModel.GetMW;
-        private readonly Mapper map = ViewModelBase.map;
+        private readonly Fuctoin map = ViewModelBase.map;
 
         private readonly Canvas canv;
         private readonly ListBox gates;
@@ -76,7 +76,7 @@ namespace UITestsLogicSimulator {
 
             scheme.Created = 123;
             scheme.Modified = 456;
-            return Utils.Obj2json(scheme.Export());
+            return Plugin.Obj2json(scheme.Export());
         }
         private void SelectGate(int id) => gates.SelectedIndex = id; // Хоть что-то хотя бы возможно сделать чисто через визуальную часть, а не в обход обёрток, нюхающих ивенты ;'-}
         private void Ticks(int count) {
@@ -96,9 +96,9 @@ namespace UITestsLogicSimulator {
             button2.Command.Execute(null);
         }
         private void ImportScheme(string data) {
-            object yeah = Utils.Json2obj(data) ?? new Exception("Что-то не то в JSON");
+            object yeah = Plugin.Json2obj(data) ?? new Exception("Что-то не то в JSON");
             var proj = ViewModelBase.TopSecretGetProj() ?? throw new Exception("А где проект? :/");
-            Scheme clone = new(proj, yeah);
+            Diagram clone = new(proj, yeah);
             var scheme = map.current_scheme ?? throw new Exception("А где схема? :/");
             scheme.Update(clone.items, clone.joins, clone.states);
             scheme.Name = clone.Name;
@@ -112,7 +112,7 @@ namespace UITestsLogicSimulator {
             sim.ComparativeTestMode = true;
 
             var inputs = sim.GetSwitches();
-            var outputs = sim.GetLightBulbs();
+            var outputs = sim.GetExits();
             int L = inputs.Length;
             int steps = 1 << L;
 
@@ -154,7 +154,7 @@ namespace UITestsLogicSimulator {
             data = Export();
             Assert.Equal("{\"name\": \"Newy\", \"created\": 123, \"modified\": 456, \"items\": [{\"id\": 0, \"pos\": \"$p$200,200\", \"size\": \"$s$71,71\", \"base_size\": 25}, {\"id\": 3, \"pos\": \"$p$300,300\", \"size\": \"$s$71,71\", \"base_size\": 25}], \"joins\": [[0, 2, \"Out\", 1, 0, \"In\"]], \"states\": \"000\"}", data);
 
-            SelectGate(5); // Switch-gate
+            SelectGate(5); // Entry-gate
             Task.Delay(1).GetAwaiter().GetResult();
 
             IGate? button = Click(canv, 100, 150);
@@ -168,7 +168,7 @@ namespace UITestsLogicSimulator {
             Move(button2.SecretGetPin(0), gate.SecretGetPin(1));
             Move(button3.SecretGetPin(0), gate2.SecretGetPin(1));
 
-            SelectGate(7); // LightBulb-gate
+            SelectGate(7); // Exit-gate
             Task.Delay(1).GetAwaiter().GetResult();
 
             IGate? ball = Click(canv, 400, 300);
@@ -176,10 +176,10 @@ namespace UITestsLogicSimulator {
 
             Move(gate2.SecretGetPin(2), ball.SecretGetPin(0));
 
-            var input = (Switch) button;
-            var input2 = (Switch) button2;
-            var input3 = (Switch) button3;
-            var output = (LightBulb) ball;
+            var input = (Entry) button;
+            var input2 = (Entry) button2;
+            var input3 = (Entry) button3;
+            var output = (Exit) ball;
 
             StringBuilder sb = new();
             for (int i = 0; i < 8; i++) {

@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 
-namespace LogicSimulator.Views.Shapes {
+namespace LogicSimulator.Views.Logical_elements {
     public abstract class GateBase: UserControl {
         public int CountIns { get; private set; }
         public int CountOuts { get; private set; }
@@ -83,8 +83,8 @@ namespace LogicSimulator.Views.Shapes {
             line_arr = list.ToArray();
             pins = list2.ToArray();
 
-            joins_in = new JoinedItems?[ins];
-            joins_out = new List<JoinedItems>[outs];
+            joins_in = new Connected?[ins];
+            joins_out = new List<Connected>[outs];
             for (int i = 0; i < outs; i++) joins_out[i] = new();
 
             MyRecalcSizes();
@@ -239,15 +239,10 @@ namespace LogicSimulator.Views.Shapes {
             var pin_stroke_size = PinStrokeSize;
             int n = 0;
             foreach (var line in line_arr) {
-                // Пришлось отказать от этих параметров из-за бага авалонии, т.к. в Bounds попадает мусор,
-                // т.е. весь путь, который линия проходит от начала координат своего предка НЕ помечается, как Margin,
-                // из-за чего подсоединение к элементам начинается сильно глючить, видя в теге Pin вместо In XD
-                // DevTools тоже обманывается, что это действительно границы линии, а не Margin :/
                 var A = pin_points[n][0];
                 var B = pin_points[n++][1];
 
                 line.StrokeThickness = pin_stroke_size;
-                // line.StartPoint = A;
                 line.Margin = new(A.X, A.Y, 0, 0);
                 line.EndPoint = B;
             }
@@ -264,14 +259,10 @@ namespace LogicSimulator.Views.Shapes {
             }
         }
 
-        /*
-         * Обработка соединений
-         */
+        protected Connected?[] joins_in;
+        protected List<Connected>[] joins_out;
 
-        protected JoinedItems?[] joins_in;
-        protected List<JoinedItems>[] joins_out;
-
-        public void AddJoin(JoinedItems join) {
+        public void AddJoin(Connected join) {
             for (int i = 0; i < 2; i++) {
                 var dist = i == 0 ? join.A : join.B;
                 if (dist.parent == this) {
@@ -280,17 +271,15 @@ namespace LogicSimulator.Views.Shapes {
                     if (data[0] == 0) {
                         joins_in[n]?.Delete();
                         joins_in[n] = join;
-                        // Log.Write("AddIn: " + n);
                     } else {
                         joins_out[n].Add(join);
-                        // Log.Write("AddOut: " + n);
                     }
                 }
             }
             skip_upd = false;
         }
 
-        public void RemoveJoin(JoinedItems join) {
+        public void RemoveJoin(Connected join) {
             for (int i = 0; i < 2; i++) {
                 var dist = i == 0 ? join.A : join.B;
                 if (dist.parent == this) {
@@ -324,14 +313,14 @@ namespace LogicSimulator.Views.Shapes {
             });
         }
 
-        public bool ContainsJoin(JoinedItems join) {
+        public bool ContainsJoin(Connected join) {
             foreach (var join2 in joins_in) if (join == join2) return true;
             foreach (var joins in joins_out)
                 foreach (var join2 in joins) if (join == join2) return true;
             return false;
         }
 
-        public Distantor GetPin(Ellipse finded) {
+        public Locontrol GetPin(Ellipse finded) {
             int n = 0;
             foreach (var pin in pins) {
                 if (pin == finded) return new(GetSelfI, n, (string?) finded.Tag ?? "");
@@ -399,7 +388,7 @@ namespace LogicSimulator.Views.Shapes {
         public List<object[]> ExportJoins(Dictionary<IGate, int> to_num) {
             List<object[]> res = new();
             foreach (var joins in joins_out) foreach (var join in joins) {
-                Distantor a = join.A, b = join.B;
+                Locontrol a = join.A, b = join.B;
                 res.Add(new object[] {
                     to_num[a.parent], a.num, a.tag,
                     to_num[b.parent], b.num, b.tag,

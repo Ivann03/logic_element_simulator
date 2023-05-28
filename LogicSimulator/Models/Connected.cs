@@ -3,17 +3,17 @@ using Avalonia.Media;
 using System.Collections.Generic;
 
 namespace LogicSimulator.Models {
-    public class JoinedItems {
-        public static readonly Dictionary<Line, JoinedItems> arrow_to_join = new();
+    public class Connected {
+        public static readonly Dictionary<Line, Connected> arrow_to_join = new();
 
-        public JoinedItems(Distantor a, Distantor b) {
+        public Connected(Locontrol a, Locontrol b) {
             A = a; B = b; Update();
             a.parent.AddJoin(this);
             if (a.parent != b.parent) b.parent.AddJoin(this);
             arrow_to_join[line] = this;
         }
-        public Distantor A { get; set; }
-        public Distantor B { get; set; }
+        public Locontrol A { get; set; }
+        public Locontrol B { get; set; }
         public Line line = new() { Tag = "Join", ZIndex = 2, Stroke = Brushes.Black, StrokeThickness = 3 };
 
         public void Update() {

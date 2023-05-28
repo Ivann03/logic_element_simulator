@@ -1,7 +1,7 @@
 using Avalonia.Controls;
 using Avalonia;
 using LogicSimulator.ViewModels;
-using LogicSimulator.Views.Shapes;
+using LogicSimulator.Views.Logical_elements;
 using System;
 using System.Collections.Generic;
 using DynamicData;
@@ -9,23 +9,23 @@ using Avalonia.Controls.Shapes;
 using Avalonia.Media;
 using Avalonia.LogicalTree;
 using System.Linq;
-using Button = LogicSimulator.Views.Shapes.Switch;
+using Button = LogicSimulator.Views.Logical_elements.Entry;
 using Avalonia.Input;
 
 namespace LogicSimulator.Models {
-    public class Mapper {
+    public class Fuctoin {
         readonly Line marker = new() { Tag = "Marker", ZIndex = 2, IsVisible = false, Stroke = Brushes.Black, StrokeThickness = 3 };
         readonly Rectangle marker2 = new() { Tag = "Marker", Classes = new("anim"), ZIndex = 2, IsVisible = false, Stroke = Brushes.MediumAquamarine, StrokeThickness = 3 };
         
         public Line Marker { get => marker; }
         public Rectangle Marker2 { get => marker2; }
 
-        public readonly Simulator sim = new(); 
+        public readonly Imitator sim = new(); 
 
         public Canvas canv = new();
 
         private IGate? marked_item;
-        private JoinedItems? marked_line;
+        private Connected? marked_line;
 
         private void UpdateMarker() {
             marker2.IsVisible = marked_item != null || marked_line != null;
@@ -53,14 +53,14 @@ namespace LogicSimulator.Models {
 
         private static IGate CreateItem(int n) {
             return n switch {
-                0 => new AND_2(),
-                1 => new OR_2(),
+                0 => new AND(),
+                1 => new OR(),
                 2 => new NOT(),
-                3 => new XOR_2(),
-                4 => new Switch(),
-                5 => new LightBulb(),
-                6 => new MUX_3(),
-                _ => new AND_2(),
+                3 => new XOR(),
+                4 => new Entry(),
+                5 => new Exit(),
+                6 => new MULTIPLEXER_3(),
+                _ => new AND(),
             };
         }
 
@@ -144,7 +144,7 @@ namespace LogicSimulator.Models {
         Point item_old_pos;
 
         Ellipse? marker_circle;
-        Distantor? start_dist;
+        Locontrol? start_dist;
         int marker_mode;
 
         Line? old_join;
@@ -177,7 +177,7 @@ namespace LogicSimulator.Models {
                 break;
             case 8:
                 if (item is not Line @join) break;
-                JoinedItems.arrow_to_join.TryGetValue(@join, out var @join2);
+                Connected.arrow_to_join.TryGetValue(@join, out var @join2);
                 if (@join2 == null) break;
 
                 if (marked_line == @join2) {
@@ -285,7 +285,7 @@ namespace LogicSimulator.Models {
                 if (marker_circle != null) {
                     var gate = GetGate(marker_circle) ?? throw new Exception("Неизвестно");
                     var end_dist = gate.GetPin(marker_circle);
-                    var newy = new JoinedItems(start_dist, end_dist);
+                    var newy = new Connected(start_dist, end_dist);
                     AddToMap(newy.line);
                 }
                 marker.IsVisible = false;
@@ -293,13 +293,13 @@ namespace LogicSimulator.Models {
                 break;
             case 8:
                 if (old_join == null) break;
-                JoinedItems.arrow_to_join.TryGetValue(old_join, out var @join);
+                Connected.arrow_to_join.TryGetValue(old_join, out var @join);
                 if (marker_circle != null && @join != null) {
                     var gate = GetGate(marker_circle) ?? throw new Exception("Неизвестно"); 
                     var p = gate.GetPin(marker_circle);
                     @join.Delete();
 
-                    var newy = join_start ? new JoinedItems(@join.A, p) : new JoinedItems(p, @join.B);
+                    var newy = join_start ? new Connected(@join.A, p) : new Connected(p, @join.B);
                     AddToMap(newy.line);
                 } else old_join.IsVisible = true;
 
@@ -327,7 +327,7 @@ namespace LogicSimulator.Models {
 
             case 2 or 8:
                 if (item is Line @line) {
-                    if (!JoinedItems.arrow_to_join.TryGetValue(@line, out var @join)) break;
+                    if (!Connected.arrow_to_join.TryGetValue(@line, out var @join)) break;
                     marked_item = null;
                     marked_line = @join;
                     UpdateMarker();
@@ -364,8 +364,8 @@ namespace LogicSimulator.Models {
             }
         }
 
-        public readonly FileHandler filer = new();
-        public Scheme? current_scheme;
+        public readonly Treatment filer = new();
+        public Diagram? current_scheme;
 
         public void Export() {
             if (current_scheme == null) return;
@@ -407,17 +407,17 @@ namespace LogicSimulator.Models {
             }
             var items_arr = list.ToArray();
 
-            List<JoinedItems> joinz = new();
+            List<Connected> joinz = new();
             foreach (var obj in current_scheme.joins) {
                 object[] join;
                 if (obj is List<object> @j) join = @j.ToArray();
                 else if (obj is object[] @j2) join = @j2;
-                else { Log.Write("Одно из соединений не того типа: " + obj + " " + Utils.Obj2json(obj)); continue; }
+                else { Log.Write("Одно из соединений не того типа: " + obj + " " + Plugin.Obj2json(obj)); continue; }
                 if (join.Length != 6 ||
                     join[0] is not int @num_a || join[1] is not int @pin_a || join[2] is not string @tag_a ||
                     join[3] is not int @num_b || join[4] is not int @pin_b || join[5] is not string @tag_b) { Log.Write("Содержимое списка соединения ошибочно"); continue; }
 
-                var newy = new JoinedItems(new(items_arr[@num_a], @pin_a, tag_a), new(items_arr[@num_b], @pin_b, tag_b));
+                var newy = new Connected(new(items_arr[@num_a], @pin_a, tag_a), new(items_arr[@num_b], @pin_b, tag_b));
                 AddToMap(newy.line);
                 joinz.Add(newy);
             }

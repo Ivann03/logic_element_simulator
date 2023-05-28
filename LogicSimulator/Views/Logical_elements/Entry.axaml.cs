@@ -8,8 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace LogicSimulator.Views.Shapes {
-    public partial class Switch: GateBase, IGate, INotifyPropertyChanged {
+namespace LogicSimulator.Views.Logical_elements {
+    public partial class Entry: GateBase, IGate, INotifyPropertyChanged {
         public override int TypeId => 5;
 
         public override UserControl GetSelf() => this;

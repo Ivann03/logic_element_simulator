@@ -6,8 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace LogicSimulator.Views.Shapes {
-    public partial class LightBulb: GateBase, IGate, INotifyPropertyChanged {
+namespace LogicSimulator.Views.Logical_elements {
+    public partial class Exit: GateBase, IGate, INotifyPropertyChanged {
         public override int TypeId => 7;
 
         public override UserControl GetSelf() => this;

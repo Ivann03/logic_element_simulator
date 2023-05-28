@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Reactive;
 
 namespace LogicSimulator.Models {
-    public class Scheme : ReactiveObject {
+    public class Diagram : ReactiveObject {
         public string Name { get; set; }
         public long Created;
         public long Modified;
@@ -14,9 +14,9 @@ namespace LogicSimulator.Models {
         public object[] joins;
         public string states;
 
-        private readonly Project parent;
+        private readonly Proect parent;
 
-        public Scheme(Project p) { 
+        public Diagram(Proect p) { 
             Created = Modified = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
             Name = "Newy";
             items = joins = Array.Empty<object>();
@@ -28,7 +28,7 @@ namespace LogicSimulator.Models {
             Delete = ReactiveCommand.Create<Unit, Unit>(_ => { FuncDelete(); return new Unit(); });
         }
 
-        public Scheme(Project p, object data) { 
+        public Diagram(Proect p, object data) { 
             parent = p;
 
             if (data is not Dictionary<string, object> dict) throw new Exception("Ожидался словарь в корне схемы");

@@ -4,11 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="{Binding UC_Width}" d:DesignHeight="{Binding UC_Height}"
              Width="{Binding UC_Width}" Height="{Binding UC_Height}"
-			 x:Class="LogicSimulator.Views.Shapes.LightBulb"
+			 x:Class="LogicSimulator.Views.Logical_elements.Entry"
 			 Tag="Gate">
 	
 	<Canvas Tag="Gate">
-		<Border Tag="Body" Margin="25 10" Background="Black" BorderThickness="{Binding BodyStrokeSize}" BorderBrush="black" Width="50" Height="50" CornerRadius="50">
+		<Border Tag="Body" Margin="20 10" Background="#d32f2e" BorderThickness="{Binding BodyStrokeSize}" BorderBrush="#fec107" Width="50" Height="50" CornerRadius="{Binding BodyRadius}" PointerPressed="Press" PointerReleased="Release">
 		</Border>
 	</Canvas>
 </UserControl>

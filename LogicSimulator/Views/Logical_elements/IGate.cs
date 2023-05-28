@@ -4,7 +4,7 @@ using Avalonia.Controls.Shapes;
 using LogicSimulator.Models;
 using System.Collections.Generic;
 
-namespace LogicSimulator.Views.Shapes {
+namespace LogicSimulator.Views.Logical_elements {
     public interface IGate {
         public int CountIns { get; }
         public int CountOuts { get; }
@@ -18,14 +18,14 @@ namespace LogicSimulator.Views.Shapes {
         public Point GetPose();
         public Rect GetBounds();
 
-        public Distantor GetPin(Ellipse finded);
+        public Locontrol GetPin(Ellipse finded);
         public Point GetPinPos(int n);
 
-        public void AddJoin(JoinedItems join);
-        public void RemoveJoin(JoinedItems join);
+        public void AddJoin(Connected join);
+        public void RemoveJoin(Connected join);
         public void ClearJoins();
         public void SetJoinColor(int o_num, bool value);
-        public bool ContainsJoin(JoinedItems join);
+        public bool ContainsJoin(Connected join);
 
         public void Brain(ref bool[] ins, ref bool[] outs);
         public int[][] GetPinData();

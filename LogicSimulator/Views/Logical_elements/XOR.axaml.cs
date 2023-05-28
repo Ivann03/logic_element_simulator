@@ -1,8 +1,8 @@
 using Avalonia.Controls;
 using System.ComponentModel;
 
-namespace LogicSimulator.Views.Shapes {
-    public partial class XOR_2: GateBase, IGate, INotifyPropertyChanged {
+namespace LogicSimulator.Views.Logical_elements {
+    public partial class XOR: GateBase, IGate, INotifyPropertyChanged {
         public override int TypeId => 3;
 
         public override UserControl GetSelf() => this;

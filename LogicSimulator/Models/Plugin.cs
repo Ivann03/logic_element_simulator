@@ -14,7 +14,7 @@ using System;
 using Avalonia.Controls.Shapes;
 
 namespace LogicSimulator.Models {
-    public static class Utils {
+    public static class Plugin {
         public static string Base64Encode(string plainText) {
             var plainTextBytes = Encoding.UTF8.GetBytes(plainText);
             return System.Convert.ToBase64String(plainTextBytes);
@@ -55,11 +55,11 @@ namespace LogicSimulator.Models {
             case Dictionary<string, object?> @dict: {
                 StringBuilder sb = new();
                 sb.Append('{');
-                foreach (var entry in @dict) {
+                foreach (var Entry in @dict) {
                     if (sb.Length > 1) sb.Append(", ");
-                    sb.Append(Obj2json(entry.Key));
+                    sb.Append(Obj2json(Entry.Key));
                     sb.Append(": ");
-                    sb.Append(Obj2json(entry.Value));
+                    sb.Append(Obj2json(Entry.Value));
                 }
                 sb.Append('}');
                 return sb.ToString();
@@ -160,10 +160,10 @@ namespace LogicSimulator.Models {
         private static string Dict2XML(Dictionary<string, object?> dict, string level) {
             StringBuilder attrs = new();
             StringBuilder items = new();
-            foreach (var entry in dict)
-                if (IsComposite(entry.Value))
-                    items.Append(level + "\t<" + entry.Key + ">" + ToXMLHandler(entry.Value, level + "\t\t") + level + "\t</" + entry.Key + ">");
-                else attrs.Append(" " + entry.Key + "=\"" + ToXMLHandler(entry.Value, "{err}") + "\"");
+            foreach (var Entry in dict)
+                if (IsComposite(Entry.Value))
+                    items.Append(level + "\t<" + Entry.Key + ">" + ToXMLHandler(Entry.Value, level + "\t\t") + level + "\t</" + Entry.Key + ">");
+                else attrs.Append(" " + Entry.Key + "=\"" + ToXMLHandler(Entry.Value, "{err}") + "\"");
 
             if (items.Length == 0) return level + "<Dict" + attrs.ToString() + "/>";
             return level + "<Dict" + attrs.ToString() + ">" + items.ToString() + level + "</Dict>";
@@ -172,9 +172,9 @@ namespace LogicSimulator.Models {
             StringBuilder attrs = new();
             StringBuilder items = new();
             int num = 0;
-            foreach (var entry in list) {
-                if (IsComposite(entry)) items.Append(ToXMLHandler(entry, level + "\t"));
-                else attrs.Append($" _{num}='" + ToXMLHandler(entry, "{err}") + "'");
+            foreach (var Entry in list) {
+                if (IsComposite(Entry)) items.Append(ToXMLHandler(Entry, level + "\t"));
+                else attrs.Append($" _{num}='" + ToXMLHandler(Entry, "{err}") + "'");
                 num++;
             }
 
@@ -275,10 +275,6 @@ namespace LogicSimulator.Models {
         }
         public static string Xml2json(string xml) => ToJSONHandler(XElement.Parse(xml));
 
-        /*
-         * YAML абилка
-         */
-
         public static string YAMLEscape(string str) {
             string[] arr = new[] { "true", "false", "null", "undefined", "" };
             if (arr.Contains(str)) return '"' + str + '"';
@@ -306,15 +302,15 @@ namespace LogicSimulator.Models {
         private static string Dict2YAML(Dictionary<string, object?> dict, string level) {
             if (dict.Count == 0) return " {}";
             StringBuilder res = new();
-            foreach (var entry in dict)
-                res.Append(level + YAMLEscape(entry.Key) + ":" + (IsComposite(entry.Value) ? "" : " ") + ToYAMLHandler(entry.Value, level + "\t"));
+            foreach (var Entry in dict)
+                res.Append(level + YAMLEscape(Entry.Key) + ":" + (IsComposite(Entry.Value) ? "" : " ") + ToYAMLHandler(Entry.Value, level + "\t"));
             return res.ToString();
         }
         private static string List2YAML(List<object?> list, string level) {
             if (list.Count == 0) return " []";
             StringBuilder res = new();
-            foreach (var entry in list)
-                res.Append(level + "-" + (IsComposite(entry) ? "" : " ") + ToYAMLHandler(entry, level + "\t"));
+            foreach (var Entry in list)
+                res.Append(level + "-" + (IsComposite(Entry) ? "" : " ") + ToYAMLHandler(Entry, level + "\t"));
             return res.ToString();
         }
 
@@ -412,7 +408,7 @@ namespace LogicSimulator.Models {
             return '"' + str + '"';
         }
         private static string YAML_ParseLayer(ref string yaml, ref int pos) {
-            if (pos == yaml.Length) return ""; // Конец файла
+            if (pos == yaml.Length) return ""; 
             StringBuilder sb = new();
             char first = yaml[pos++];
             while (" \t".Contains(first)) {
@@ -424,7 +420,7 @@ namespace LogicSimulator.Models {
         }
         private static string YAML_ToJSONHandler(ref string yaml, ref int pos) {
             var layer = YAML_ParseLayer(ref yaml, ref pos);
-            if (pos == yaml.Length) return ""; // Конец файла
+            if (pos == yaml.Length) return ""; 
             char first = yaml[pos++];
 
             switch (first) {
@@ -440,7 +436,7 @@ namespace LogicSimulator.Models {
                 bool First = true;
                 pos--;
                 while (true) {
-                    if (pos == yaml.Length) break; // Конец файла
+                    if (pos == yaml.Length) break; 
 
                     if (First) First = false;
                     else {
@@ -491,7 +487,7 @@ namespace LogicSimulator.Models {
                 res.Append('{');
                 bool First = true;
                 while (true) {
-                    if (pos == yaml.Length) break; // Конец файла
+                    if (pos == yaml.Length) break;
 
                     if (First) First = false;
                     else {
@@ -552,19 +548,14 @@ namespace LogicSimulator.Models {
             } catch (Exception e) { Log.Write("Ошибка YAML парсера: " + e); throw; }
         }
 
-        /*
-         * Misc
-         */
 
-        public static string? Obj2xml(object? obj) => Json2xml(Obj2json(obj)); // Чёт припомнилось свойство транзитивности с дискретной матеши...
+        public static string? Obj2xml(object? obj) => Json2xml(Obj2json(obj)); 
         public static object? Xml2obj(string xml) => Json2obj(Xml2json(xml));
         public static string? Obj2yaml(object? obj) => Json2yaml(Obj2json(obj));
         public static object? Yaml2obj(string xml) => Json2obj(Yaml2json(xml));
 
         public static void RenderToFile(Control target, string path) {
-            // var target = (Control?) tar.Parent;
-            // if (target == null) return;
-
+           
             double w = target.Bounds.Width, h = target.Bounds.Height;
             var pixelSize = new PixelSize((int) w, (int) h);
             var size = new Size(w, h);
@@ -575,7 +566,7 @@ namespace LogicSimulator.Models {
             bitmap.Save(path);
         }
 
-        public static string TrimAll(this string str) { // Помимо пробелов по бокам, убирает повторы пробелов внутри
+        public static string TrimAll(this string str) { 
             StringBuilder sb = new();
             for (int i = 0; i < str.Length; i++) {
                 if (i > 0 && str[i] == ' ' && str[i - 1] == ' ') continue;
@@ -584,9 +575,7 @@ namespace LogicSimulator.Models {
             return sb.ToString().Trim();
         }
 
-        // Странно, почему оригинальный Split() работает, как обычный Split(' '),
-        // ведь во всех языках (по крайней мере в тех, которые я видел до C#) он
-        // игнорирует добавления в ответ пустых строк.
+
         public static string[] NormSplit(this string str) => str.TrimAll().Split(' ');
 
         public static string GetStackInfo() {
@@ -639,19 +628,19 @@ namespace LogicSimulator.Models {
         public static double Max(this double A, double B) => A > B ? A : B;
 
         public static void Remove(this Control item) {
-            var p = (Panel?) item.Parent; // Именно Panel и добавляет понятие Children ;'-}}}}}}}}}}
+            var p = (Panel?) item.Parent;
             p?.Children.Remove(item);
         }
 
         public static Point Center(this Visual item, Visual? parent) {
             var tb = item.TransformedBounds;
-            if (tb == null) return new(); // Обычно так не бывает
+            if (tb == null) return new(); 
             var bounds = tb.Value.Bounds.TransformToAABB(tb.Value.Transform);
             var res = bounds.Center;
-            if (parent == null) return res; // parent в качестве точки отсчёта, например холст
+            if (parent == null) return res; 
 
             var tb2 = parent.TransformedBounds;
-            if (tb2 == null) return res; // Обычно так не бывает
+            if (tb2 == null) return res; 
             var bounds2 = tb2.Value.Bounds.TransformToAABB(tb2.Value.Transform);
             return res - bounds2.TopLeft;
         }

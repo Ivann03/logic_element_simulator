@@ -7,13 +7,13 @@ using System.IO;
 using System.Linq;
 
 namespace LogicSimulator.Models {
-    public class FileHandler {
+    public class Treatment {
         readonly string AppData;
-        readonly List<Project> projects = new();
+        readonly List<Proect> projects = new();
         readonly List<string> project_paths = new();
-        readonly Dictionary<string, Project> proj_dict = new();
+        readonly Dictionary<string, Proect> proj_dict = new();
 
-        public FileHandler() {
+        public Treatment() {
             string app_data = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             app_data = Path.Combine(app_data, "LogicSimulator");
             if (!Directory.Exists(app_data)) Directory.CreateDirectory(app_data);
@@ -23,7 +23,7 @@ namespace LogicSimulator.Models {
 
 
 
-        private void AddProject(Project proj) {
+        private void AddProject(Proect proj) {
             if (proj.FileDir == null || proj.FileName == null) return;
 
             var path = Path.Combine(proj.FileDir, proj.FileName);
@@ -42,23 +42,23 @@ namespace LogicSimulator.Models {
 
 
 
-        public Project CreateProject() {
-            var proj = new Project(this);
+        public Proect CreateProject() {
+            var proj = new Proect(this);
             return proj;
         }
-        private Project? LoadProject(string dir, string fileName) {
+        private Proect? LoadProject(string dir, string fileName) {
             try {
                 var path = Path.Combine(dir, fileName);
                 if (!File.Exists(path)) return null;
 
-                var obj = Utils.Yaml2obj(File.ReadAllText(path)) ?? throw new DataException("Не верная структура YAML-файла проекта!");
-                var proj = new Project(this, dir, fileName, obj);
+                var obj = Plugin.Yaml2obj(File.ReadAllText(path)) ?? throw new DataException("Не верная структура YAML-файла проекта!");
+                var proj = new Proect(this, dir, fileName, obj);
                 AddProject(proj);
                 return proj;
             } catch (Exception e) { Log.Write("Неудачная попытка загрузить проект:\n" + e); }
             return null;
         }
-        private Project? LoadProject(string path) {
+        private Proect? LoadProject(string path) {
             var s_arr = path.Split(Path.DirectorySeparatorChar).ToList();
             var name = s_arr[^1];
             s_arr.RemoveRange(s_arr.Count - 1, 1);
@@ -71,7 +71,7 @@ namespace LogicSimulator.Models {
             if (!File.Exists(file)) return;
 
             object data;
-            try { data = Utils.Yaml2obj(File.ReadAllText(file)) ?? throw new DataException("Не верная структура YAML-файла списка проектов!"); } catch (Exception e) { Log.Write("Неудачная попытка загрузить список проектов:\n" + e); return; }
+            try { data = Plugin.Yaml2obj(File.ReadAllText(file)) ?? throw new DataException("Не верная структура YAML-файла списка проектов!"); } catch (Exception e) { Log.Write("Неудачная попытка загрузить список проектов:\n" + e); return; }
 
             if (data is not List<object> @arr) { Log.Write("В списке проектов на верхнем уровне ожидалось увидеть список"); return; }
             foreach (var path in @arr) {
@@ -83,11 +83,11 @@ namespace LogicSimulator.Models {
 
 
 
-        internal static void SaveProject(Project proj) {
+        internal static void SaveProject(Proect proj) {
             var dir = proj.FileDir;
             if (dir == null) return;
 
-            var data = Utils.Obj2yaml(proj.Export());
+            var data = Plugin.Obj2yaml(proj.Export());
             var name = proj.FileName;
             name ??= GetProjectFileName(dir);
             proj.FileName = name;
@@ -97,15 +97,15 @@ namespace LogicSimulator.Models {
         }
         private void SaveProjectList() {
             var file = Path.Combine(AppData, "project_list.yaml");
-            var content = Utils.Obj2yaml(project_paths) ?? throw new Exception("Такого не бывает");
+            var content = Plugin.Obj2yaml(project_paths) ?? throw new Exception("Такого не бывает");
             File.WriteAllText(file, content);
         }
 
-        internal Project[] GetSortedProjects() {
+        internal Proect[] GetSortedProjects() {
             projects.Sort();
             return projects.ToArray();
         }
-        internal void AppendProject(Project proj) {
+        internal void AppendProject(Proect proj) {
             if (proj.FileDir == null || proj.FileName == null) return;
 
             var path = Path.Combine(proj.FileDir, proj.FileName);
@@ -125,7 +125,7 @@ namespace LogicSimulator.Models {
             var task = dlg.ShowAsync(parent);
             return task.GetAwaiter().GetResult();
         }
-        internal Project? SelectProjectFile(Window parent) {
+        internal Proect? SelectProjectFile(Window parent) {
             var dlg = new OpenFileDialog {
                 Title = "Выберите файл с проектом (proj_*.yaml), который нужно открыть"
             };

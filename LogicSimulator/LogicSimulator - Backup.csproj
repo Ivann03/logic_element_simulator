@@ -34,29 +34,26 @@
     <Compile Update="Views\LauncherWindow.axaml.cs">
       <DependentUpon>LauncherWindow.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\Logical_elements\Exit.axaml.cs">
-      <DependentUpon>Exit.axaml</DependentUpon>
+    <Compile Update="Views\Shapes\LightBulb.axaml.cs">
+      <DependentUpon>LightBulb.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\Logical_elements\Entry.axaml.cs">
-      <DependentUpon>Entry.axaml</DependentUpon>
+    <Compile Update="Views\Shapes\Switch.axaml.cs">
+      <DependentUpon>Switch.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\Logical_elements\MULTIPLEXER.axaml.cs">
+    <Compile Update="Views\Shapes\MULTIPLEXER.axaml.cs">
       <DependentUpon>MULTIPLEXER.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\Logical_elements\XOR.axaml.cs">
+    <Compile Update="Views\Shapes\XOR.axaml.cs">
       <DependentUpon>XOR.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\Logical_elements\OR.axaml.cs">
+    <Compile Update="Views\Shapes\OR.axaml.cs">
       <DependentUpon>OR.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\Logical_elements\NOT.axaml.cs">
+    <Compile Update="Views\Shapes\NOT.axaml.cs">
       <DependentUpon>NOT.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\Logical_elements\AND.axaml.cs">
+    <Compile Update="Views\Shapes\AND.axaml.cs">
       <DependentUpon>AND.axaml</DependentUpon>
     </Compile>
-    <!--Compile Update="Views\Logical_elements\XOR.axaml.cs">
-      <DependentUpon>XOR.axaml</DependentUpon>
-    </Compile>-->
   </ItemGroup>
 </Project>

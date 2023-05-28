@@ -1,5 +1,5 @@
 ﻿using LogicSimulator.ViewModels;
-using LogicSimulator.Views.Shapes;
+using LogicSimulator.Views.Logical_elements;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,13 +23,13 @@ namespace LogicSimulator.Models {
         }
 
         public void Print() {
-            Log.Write("Элемент: " + item + " | Ins: " + Utils.Obj2json(ins) + " | Outs: " + Utils.Obj2json(outs));
+            Log.Write("Элемент: " + item + " | Ins: " + Plugin.Obj2json(ins) + " | Outs: " + Plugin.Obj2json(outs));
         }
     }
 
 
-    public class Simulator {
-        public Simulator() {
+    public class Imitator {
+        public Imitator() {
             Start();
         }
 
@@ -153,8 +153,8 @@ namespace LogicSimulator.Models {
 
         public void TopSecretPublicTickMethod() => Tick();
 
-        public Switch[] GetSwitches() => items.Select(x => x.item).OfType<Switch>().ToArray();
-        public LightBulb[] GetLightBulbs() => items.Select(x => x.item).OfType<LightBulb>().ToArray();
+        public Entry[] GetSwitches() => items.Select(x => x.item).OfType<Entry>().ToArray();
+        public Exit[] GetExits() => items.Select(x => x.item).OfType<Exit>().ToArray();
 
 
         private bool comparative_test_mode = false;
