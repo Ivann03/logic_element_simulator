@@ -49,7 +49,7 @@ namespace UITestsLogicSimulator {
 
 
 
-        private IGate? Click(Control target, double x, double y) {
+        private Func? Click(Control target, double x, double y) {
             var pos = new Point(x, y);
             map.Press(target, pos);
             int mode = map.Release(target, pos);
@@ -138,7 +138,7 @@ namespace UITestsLogicSimulator {
             SelectGate(0); // AND-gate
             Task.Delay(1).GetAwaiter().GetResult();
 
-            IGate? gate = Click(canv, 200, 200);
+            Func? gate = Click(canv, 200, 200);
             Assert.NotNull(gate);
             var data = Export();
             Assert.Equal("{\"name\": \"Newy\", \"created\": 123, \"modified\": 456, \"items\": [{\"id\": 0, \"pos\": \"$p$200,200\", \"size\": \"$s$71,71\", \"base_size\": 25}], \"joins\": [], \"states\": \"00\"}", data);
@@ -146,7 +146,7 @@ namespace UITestsLogicSimulator {
             SelectGate(3); // XOR-gate
             Task.Delay(1).GetAwaiter().GetResult();
 
-            IGate? gate2 = Click(canv, 300, 300);
+            Func? gate2 = Click(canv, 300, 300);
             Assert.NotNull(gate2);
 
             Move(gate.SecretGetPin(2), gate2.SecretGetPin(0)); // Соединяем gate и gate2
@@ -157,9 +157,9 @@ namespace UITestsLogicSimulator {
             SelectGate(5); // Entry-gate
             Task.Delay(1).GetAwaiter().GetResult();
 
-            IGate? button = Click(canv, 100, 150);
-            IGate? button2 = Click(canv, 100, 250);
-            IGate? button3 = Click(canv, 100, 350);
+            Func? button = Click(canv, 100, 150);
+            Func? button2 = Click(canv, 100, 250);
+            Func? button3 = Click(canv, 100, 350);
             Assert.NotNull(button);
             Assert.NotNull(button2);
             Assert.NotNull(button3);
@@ -171,7 +171,7 @@ namespace UITestsLogicSimulator {
             SelectGate(7); // Exit-gate
             Task.Delay(1).GetAwaiter().GetResult();
 
-            IGate? ball = Click(canv, 400, 300);
+            Func? ball = Click(canv, 400, 300);
             Assert.NotNull(ball);
 
             Move(gate2.SecretGetPin(2), ball.SecretGetPin(0));

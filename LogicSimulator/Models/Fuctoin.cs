@@ -24,7 +24,7 @@ namespace LogicSimulator.Models {
 
         public Canvas canv = new();
 
-        private IGate? marked_item;
+        private Func? marked_item;
         private Connected? marked_line;
 
         private void UpdateMarker() {
@@ -51,7 +51,7 @@ namespace LogicSimulator.Models {
         private int selected_item = 0;
         public int SelectedItem { get => selected_item; set => selected_item = value; }
 
-        private static IGate CreateItem(int n) {
+        private static Func CreateItem(int n) {
             return n switch {
                 0 => new AND(),
                 1 => new OR(),
@@ -64,21 +64,21 @@ namespace LogicSimulator.Models {
             };
         }
 
-        public IGate[] item_types = Enumerable.Range(0, 7).Select(CreateItem).ToArray();
+        public Func[] item_types = Enumerable.Range(0, 7).Select(CreateItem).ToArray();
 
-        public IGate GenSelectedItem() => CreateItem(selected_item);
+        public Func GenSelectedItem() => CreateItem(selected_item);
 
-        readonly List<IGate> items = new();
+        readonly List<Func> items = new();
         private void AddToMap(IControl item) {
             canv.Children.Add(item);
         }
 
-        public void AddItem(IGate item) {
+        public void AddItem(Func item) {
             items.Add(item);
             sim.AddItem(item);
             AddToMap(item.GetSelf());
         }
-        public void RemoveItem(IGate item) {
+        public void RemoveItem(Func item) {
             if (marked_item != null) {
                 marked_item = null;
                 UpdateMarker();
@@ -133,14 +133,14 @@ namespace LogicSimulator.Models {
             }
             return null;
         }
-        private static IGate? GetGate(Control item) {
+        private static Func? GetGate(Control item) {
             var UC = GetUC(item);
-            if (UC is IGate @gate) return @gate;
+            if (UC is Func @gate) return @gate;
             return null;
         }
 
         Point moved_pos;
-        IGate? moved_item;
+        Func? moved_item;
         Point item_old_pos;
 
         Ellipse? marker_circle;
@@ -372,7 +372,7 @@ namespace LogicSimulator.Models {
 
             var arr = items.Select(x => x.Export()).ToArray();
 
-            Dictionary<IGate, int> item_to_num = new();
+            Dictionary<Func, int> item_to_num = new();
             int n = 0;
             foreach (var item in items) item_to_num.Add(item, n++);
             List<object[]> joins = new();
@@ -393,7 +393,7 @@ namespace LogicSimulator.Models {
 
             RemoveAll();
 
-            List<IGate> list = new();
+            List<Func> list = new();
             foreach (var item in current_scheme.items) {
                 if (item is not Dictionary<string, object> @dict) { Log.Write("Не верный тип элемента: " + item); continue; }
 

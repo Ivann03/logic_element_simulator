@@ -84,7 +84,7 @@ namespace LogicSimulator.ViewModels {
             };
         }
 
-        public static IGate[] ItemTypes { get => map.item_types; }
+        public static Func[] ItemTypes { get => map.item_types; }
         public static int SelectedItem { get => map.SelectedItem; set => map.SelectedItem = value; }
 
         Grid? cur_grid;

@@ -5,7 +5,7 @@ using LogicSimulator.Models;
 using System.Collections.Generic;
 
 namespace LogicSimulator.Views.Logical_elements {
-    public interface IGate {
+    public interface Func {
         public int CountIns { get; }
         public int CountOuts { get; }
         public UserControl GetSelf();
@@ -29,11 +29,11 @@ namespace LogicSimulator.Views.Logical_elements {
 
         public void Brain(ref bool[] ins, ref bool[] outs);
         public int[][] GetPinData();
-        public void LogicUpdate(Dictionary<IGate, Meta> ids, Meta me);
+        public void LogicUpdate(Dictionary<Func, Meta> ids, Meta me);
 
         public int TypeId { get; }
         public object Export();
-        public List<object[]> ExportJoins(Dictionary<IGate, int> to_num);
+        public List<object[]> ExportJoins(Dictionary<Func, int> to_num);
         public void Import(Dictionary<string, object> dict);
 
         public Ellipse SecretGetPin(int n);

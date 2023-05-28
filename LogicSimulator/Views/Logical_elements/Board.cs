@@ -11,11 +11,11 @@ using System.ComponentModel;
 using System.Linq;
 
 namespace LogicSimulator.Views.Logical_elements {
-    public abstract class GateBase: UserControl {
+    public abstract class Board: UserControl {
         public int CountIns { get; private set; }
         public int CountOuts { get; private set; }
         public abstract UserControl GetSelf();
-        protected abstract IGate GetSelfI { get; }
+        protected abstract Func GetSelfI { get; }
         protected abstract void Init();
         protected abstract int[][] Sides { get; }
 
@@ -29,7 +29,7 @@ namespace LogicSimulator.Views.Logical_elements {
         protected bool use_bottom;
         private int[][] pin_data;
 
-        public GateBase() {
+        public Board() {
             var sides = Sides;
             use_top = sides[0].Length > 0;
             use_left = sides[1].Length > 0;
@@ -340,7 +340,7 @@ namespace LogicSimulator.Views.Logical_elements {
         public int[][] GetPinData() => pin_data;
 
         bool skip_upd = true;
-        public void LogicUpdate(Dictionary<IGate, Meta> ids, Meta me) {
+        public void LogicUpdate(Dictionary<Func, Meta> ids, Meta me) {
             if (skip_upd) return;
             skip_upd = true;
 
@@ -385,7 +385,7 @@ namespace LogicSimulator.Views.Logical_elements {
         }
         public virtual Dictionary<string, object>? ExtraExport() => null;
 
-        public List<object[]> ExportJoins(Dictionary<IGate, int> to_num) {
+        public List<object[]> ExportJoins(Dictionary<Func, int> to_num) {
             List<object[]> res = new();
             foreach (var joins in joins_out) foreach (var join in joins) {
                 Locontrol a = join.A, b = join.B;

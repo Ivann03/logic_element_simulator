@@ -4,10 +4,10 @@ using LogicSimulator.Views.Logical_elements;
 namespace LogicSimulator.Models {
     public class Locontrol {
         public readonly int num;
-        public IGate parent;
+        public Func parent;
         public readonly string tag;
 
-        public Locontrol(IGate parent, int n, string tag) {
+        public Locontrol(Func parent, int n, string tag) {
             this.parent = parent;
             num = n; 
             this.tag = tag;

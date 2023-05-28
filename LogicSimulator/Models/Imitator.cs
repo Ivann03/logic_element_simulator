@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace LogicSimulator.Models {
     public class Meta {
-        public IGate? item;
+        public Func? item;
         public int[] ins;
         public int[] outs;
         public bool[] i_buf;
         public bool[] o_buf;
 
-        public Meta(IGate item, int out_id) {
+        public Meta(Func item, int out_id) {
             this.item = item;
             ins = Enumerable.Repeat(0, item.CountIns).ToArray();
             outs = Enumerable.Range(out_id, item.CountOuts).ToArray();
@@ -61,9 +61,9 @@ namespace LogicSimulator.Models {
         List<bool> outs = new() { false };
         List<bool> outs2 = new() { false };
         readonly List<Meta> items = new();
-        readonly Dictionary<IGate, Meta> ids = new();
+        readonly Dictionary<Func, Meta> ids = new();
 
-        public void AddItem(IGate item) {
+        public void AddItem(Func item) {
             Stop();
 
             int out_id = outs.Count;
@@ -79,7 +79,7 @@ namespace LogicSimulator.Models {
             Start();
         }
 
-        public void RemoveItem(IGate item) {
+        public void RemoveItem(Func item) {
             Stop();
 
             Meta meta = ids[item];

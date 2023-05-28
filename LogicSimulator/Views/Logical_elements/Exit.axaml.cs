@@ -7,11 +7,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace LogicSimulator.Views.Logical_elements {
-    public partial class Exit: GateBase, IGate, INotifyPropertyChanged {
+    public partial class Exit: Board, Func, INotifyPropertyChanged {
         public override int TypeId => 7;
 
         public override UserControl GetSelf() => this;
-        protected override IGate GetSelfI => this;
+        protected override Func GetSelfI => this;
         protected override int[][] Sides => new int[][] {
             Array.Empty<int>(),
             new int[] { 0 },

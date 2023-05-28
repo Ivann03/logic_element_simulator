@@ -2,11 +2,11 @@ using Avalonia.Controls;
 using System.ComponentModel;
 
 namespace LogicSimulator.Views.Logical_elements {
-    public partial class MULTIPLEXER_3: GateBase, IGate, INotifyPropertyChanged {
+    public partial class MULTIPLEXER_3: Board, Func, INotifyPropertyChanged {
         public override int TypeId => 4;
 
         public override UserControl GetSelf() => this;
-        protected override IGate GetSelfI => this;
+        protected override Func GetSelfI => this;
         protected override int[][] Sides => new int[][] {
             System.Array.Empty<int>(),
             new int[] { 0, 0, 0, 0, 0, 0, 0, 0 },
