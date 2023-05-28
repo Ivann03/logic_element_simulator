@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net7.0</TargetFramework>
@@ -13,6 +13,7 @@
     <None Remove=".gitignore" />
     <None Remove="Assets\Deleter.png" />
     <None Remove="Assets\NewItem.png" />
+    <!--<None Remove="Assets\Resizer.png" />-->
     <None Remove="Assets\TrashCan.png" />
     <None Remove="Assets\vectorasd-logo.ico" />
   </ItemGroup>
@@ -34,41 +35,20 @@
     <Compile Update="Views\LauncherWindow.axaml.cs">
       <DependentUpon>LauncherWindow.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\Shapes\AND_8.axaml.cs">
-      <DependentUpon>AND_8.axaml</DependentUpon>
+    <Compile Update="Views\Logical_elements\MUX.axaml.cs">
+      <DependentUpon>MUX.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\Shapes\NAND_2.axaml.cs">
-      <DependentUpon>NAND_2.axaml</DependentUpon>
+    <Compile Update="Views\Logical_elements\XOR.axaml.cs">
+      <DependentUpon>XOR.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\Shapes\Button.axaml.cs">
-      <DependentUpon>Button.axaml</DependentUpon>
+    <Compile Update="Views\Logical_elements\OR.axaml.cs">
+      <DependentUpon>OR.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\Shapes\LightBulb.axaml.cs">
-      <DependentUpon>LightBulb.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\Shapes\OR_8.axaml.cs">
-      <DependentUpon>OR_8.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\Shapes\Switch.axaml.cs">
-      <DependentUpon>Switch.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\Shapes\MUX_3.axaml.cs">
-      <DependentUpon>MUX_3.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\Shapes\FlipFlop.axaml.cs">
-      <DependentUpon>FlipFlop.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\Shapes\XOR_2.axaml.cs">
-      <DependentUpon>XOR_2.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\Shapes\OR_2.axaml.cs">
-      <DependentUpon>OR_2.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\Shapes\NOT.axaml.cs">
+    <Compile Update="Views\Logical_elements\NOT.axaml.cs">
       <DependentUpon>NOT.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\Shapes\AND_2.axaml.cs">
-      <DependentUpon>AND_2.axaml</DependentUpon>
+    <Compile Update="Views\Logical_elements\AND.axaml.cs">
+      <DependentUpon>AND.axaml</DependentUpon>
     </Compile>
   </ItemGroup>
 </Project>
