@@ -11,11 +11,11 @@ using System.ComponentModel;
 using System.Linq;
 
 namespace LogicSimulator.Views.Shapes {
-    public abstract class GateBase: UserControl {
+    public abstract class Bord: UserControl {
         public int CountIns { get; private set; }
         public int CountOuts { get; private set; }
         public abstract UserControl GetSelf();
-        protected abstract IGate GetSelfI { get; }
+        protected abstract Func GetSelfI { get; }
         protected abstract void Init();
         protected abstract int[][] Sides { get; }
 
@@ -29,7 +29,7 @@ namespace LogicSimulator.Views.Shapes {
         protected bool use_bottom;
         private int[][] pin_data;
 
-        public GateBase() {
+        public Bord() {
             var sides = Sides;
             use_top = sides[0].Length > 0;
             use_left = sides[1].Length > 0;
@@ -50,16 +50,10 @@ namespace LogicSimulator.Views.Shapes {
             CountIns = ins;
             CountOuts = outs + ios;
 
-            /* double sizer = sides.Select(x => x.Length).Max();
-            double vert_sizer = Math.Max(Math.Max(sides[0].Length, sides[3].Length), 3);
-            width = 30 * (2 + Math.Min(sizer, vert_sizer) / 2);
-            height = Math.Max(30 * (2 + sizer / 2), (9 + 32) * 2 / 3 * (1.5 + 0.75 * CountIns.Max(CountOuts)));*/
             width = MinW; height = MinH;
             if (height < width) height = width;
-            // AvaloniaXamlLoader.Load(GetSelf()); // InitializeComponent(); Не вышло :///
-            // А так от Init бы полностью отказался бы ;'-} Принцип Подскановки Лископ бы просто пылал от этого, хоть абстрактному классу и положено зависеть от потомка ;'-}
-            DataContext = GetSelf();
-            Init(); // :///
+           DataContext = GetSelf();
+            Init(); 
 
             var canv = (Canvas) LogicalChildren[0];
             List<Line> list = new();
@@ -72,36 +66,37 @@ namespace LogicSimulator.Views.Shapes {
                 foreach (var type in side) {
                     if (type < 0) continue;
 
-                    var newy = new Line() { Tag = "Pin", ZIndex = 1, Stroke = Brushes.Gray };
+                    var newy = new Line() { Tag = "Pin", ZIndex = 1, Stroke = Brushes.Black };
                     list.Add(newy);
                     canv.Children.Add(newy);
 
-                    var newy2 = new Ellipse() { Tag = type == 0 ? "In" : type == 1 ? "Out" : "IO", ZIndex = 2, Stroke = Brushes.Gray, Fill = new SolidColorBrush(Color.Parse("#0000")) };
+                    var newy2 = new Ellipse() { Tag = type == 0 ? "In" : type == 1 ? "Out" : "IO", ZIndex = 2, Stroke = Brushes.Black, Fill = new SolidColorBrush(Color.Parse("#0000")) };
                     list2.Add(newy2);
                     canv.Children.Add(newy2);
                 }
             line_arr = list.ToArray();
             pins = list2.ToArray();
 
-            joins_in = new JoinedItems?[ins];
-            joins_out = new List<JoinedItems>[outs];
+            joins_in = new Connected?[ins];
+            joins_out = new List<Connected>[outs];
             for (int i = 0; i < outs; i++) joins_out[i] = new();
 
             MyRecalcSizes();
         }
 
-        /*
-         * Всё о размерах и позициях самого элемента ;'-}
-         */
+        
+         // Всё о размерах и позициях самого элемента 
+         
 
         public void Move(Point pos, bool global = false) {
             Margin = new(pos.X - UC_Width / 2, pos.Y - UC_Height / 2, 0, 0);
-            // Log.Write("Пришла позиция: " + pos + " | а вышла: " + GetPos());
+
             UpdateJoins(global);
         }
 
         private double MinW => BodyRadius.TopLeft * 1.5 + (EllipseSize + BaseFraction * 2) * (Sides[0].Length.Max(Sides[3].Length).Max(2) - 0.8);
         private double MinH => BodyRadius.TopLeft * 1.5 + (EllipseSize + BaseFraction * 2) * (Sides[1].Length.Max(Sides[2].Length).Max(2) - 0.8);
+
         public void ChangeScale(double scale, bool global = false) {
             var fix = GetPos();
             base_size *= scale;
@@ -121,12 +116,8 @@ namespace LogicSimulator.Views.Shapes {
         public Point GetPose() => pose;
         public Rect GetBounds() => new(Margin.Left, Margin.Top, UC_Width, UC_Height);
 
-        /*
-         * Обработка размеров внутренностей
-         */
-
         protected double base_size = 25;
-        protected double width = 30 * 3; // Размеры тела, а не всего UserControl
+        protected double width = 30 * 3; 
         protected double height = 30 * 3;
 
         public double BaseSize => base_size;
@@ -150,8 +141,7 @@ namespace LogicSimulator.Views.Shapes {
         public Thickness ImageMargins { get {
             double R = BodyRadius.BottomLeft;
             double num = R - R / Math.Sqrt(2);
-            return new(0, 0, num, num); // Картинка с переместителем
-            // Картинка с удалителем ... устранена ;'-}
+            return new(0, 0, num, num); 
         } }
 
 
@@ -163,9 +153,7 @@ namespace LogicSimulator.Views.Shapes {
             double min = EllipseSize + BaseFraction * 2;
             double pin_start = EllipseSize - EllipseStrokeSize / 2;
             double pin_width = base_size - EllipseSize + PinStrokeSize;
-            // .1.
-            // .1..2.
-            // .1..2..3.
+
             foreach (var side in Sides) {
                 n++;
                 double count = side.Length;
@@ -248,15 +236,11 @@ namespace LogicSimulator.Views.Shapes {
             var pin_stroke_size = PinStrokeSize;
             int n = 0;
             foreach (var line in line_arr) {
-                // Пришлось отказать от этих параметров из-за бага авалонии, т.к. в Bounds попадает мусор,
-                // т.е. весь путь, который линия проходит от начала координат своего предка НЕ помечается, как Margin,
-                // из-за чего подсоединение к элементам начинается сильно глючить, видя в теге Pin вместо In XD
-                // DevTools тоже обманывается, что это действительно границы линии, а не Margin :/
                 var A = pin_points[n][0];
                 var B = pin_points[n++][1];
 
                 line.StrokeThickness = pin_stroke_size;
-                // line.StartPoint = A;
+
                 line.Margin = new(A.X, A.Y, 0, 0);
                 line.EndPoint = B;
             }
@@ -273,14 +257,11 @@ namespace LogicSimulator.Views.Shapes {
             }
         }
 
-        /*
-         * Обработка соединений
-         */
+  //Обработка соеденений
+        protected Connected?[] joins_in;
+        protected List<Connected>[] joins_out;
 
-        protected JoinedItems?[] joins_in;
-        protected List<JoinedItems>[] joins_out;
-
-        public void AddJoin(JoinedItems join) {
+        public void AddJoin(Connected join) {
             for (int i = 0; i < 2; i++) {
                 var dist = i == 0 ? join.A : join.B;
                 if (dist.parent == this) {
@@ -289,17 +270,15 @@ namespace LogicSimulator.Views.Shapes {
                     if (data[0] == 0) {
                         joins_in[n]?.Delete();
                         joins_in[n] = join;
-                        // Log.Write("AddIn: " + n);
                     } else {
                         joins_out[n].Add(join);
-                        // Log.Write("AddOut: " + n);
                     }
                 }
             }
             skip_upd = false;
         }
 
-        public void RemoveJoin(JoinedItems join) {
+        public void RemoveJoin(Connected join) {
             for (int i = 0; i < 2; i++) {
                 var dist = i == 0 ? join.A : join.B;
                 if (dist.parent == this) {
@@ -327,24 +306,22 @@ namespace LogicSimulator.Views.Shapes {
 
         public void SetJoinColor(int o_num, bool value) {
             var joins = joins_out[o_num];
-            Dispatcher.UIThread.InvokeAsync(() => { // Ох, знакомая головная боль с андроида, где даже Toast за пределами главного потока не вызовешь :/ XD :D
+            Dispatcher.UIThread.InvokeAsync(() => { 
                 foreach(var join in joins)
-                    join.line.Stroke = value ? Brushes.Lime : Brushes.DarkGray;
+                    join.line.Stroke = Brushes.Black;
             });
         }
 
-        public bool ContainsJoin(JoinedItems join) {
+        public bool ContainsJoin(Connected join) {
             foreach (var join2 in joins_in) if (join == join2) return true;
             foreach (var joins in joins_out)
                 foreach (var join2 in joins) if (join == join2) return true;
             return false;
         }
 
-        /*
-         * Обработка пинов
-         */
 
-        public Distantor GetPin(Ellipse finded) {
+
+        public Locontrol GetPin(Ellipse finded) {
             int n = 0;
             foreach (var pin in pins) {
                 if (pin == finded) return new(GetSelfI, n, (string?) finded.Tag ?? "");
@@ -353,36 +330,21 @@ namespace LogicSimulator.Views.Shapes {
             throw new Exception("Так не бывает");
         }
 
-        /* Внимание! TransformedBounds в принципе не обновляется, когда мне это надо, сколько бы времени
-         * не прошло, ПО ЭТОМУ высчет центра окружности через TransformedBounds отстаёт!
-         * По этому от метода Center, что я сделал в Utils, придётся отказаться XD
-         * 
-        protected override void OnPropertyChanged<T>(AvaloniaPropertyChangedEventArgs<T> change) {
-            base.OnPropertyChanged(change);
-            if (change.Property.Name == "TransformedBounds")
-                Log.Write("Что-то изменилось " + change.NewValue.Value);
-            else
-                Log.Write("Что-то изменилось " + change.Property.Name + " " + change.NewValue.Value);
-        }*/
+       
 
         Thickness[] ellipse_margins = Array.Empty<Thickness>();
 
         public Point GetPinPos(int n) {
-            // var pin = pins[n];
-            // return pin.Center(ref_point); // Смотрите Utils ;'-} Там круто сделан метод (но он по факту и оказался причиной бага, т.к. TransformedBounds ОПАЗДЫВАААААЕЕЕЕЕЕЕЕЕЕЕЕЕЕТ!)
-            var m = ellipse_margins[n];
+           var m = ellipse_margins[n];
             double R2 = EllipseSize / 2;
             return new Point(Margin.Left + m.Left + R2, Margin.Top + m.Top + R2);
         }
 
-        /*
-         * Мозги
-         */
 
         public int[][] GetPinData() => pin_data;
 
         bool skip_upd = true;
-        public void LogicUpdate(Dictionary<IGate, Meta> ids, Meta me) {
+        public void LogicUpdate(Dictionary<Func, Meta> ids, Meta me) {
             if (skip_upd) return;
             skip_upd = true;
 
@@ -398,7 +360,7 @@ namespace LogicSimulator.Views.Shapes {
                         Meta meta = ids[p];
                         int[] data = p.GetPinData()[item.num];
                         me.ins[i] = meta.outs[data[1]];
-                        // Log.Write("ins: " + Utils.Obj2json(me.ins) + " | " + data[1]);
+                       
                     }
                 }
                 if (join.B.parent == this) {
@@ -408,16 +370,13 @@ namespace LogicSimulator.Views.Shapes {
                         Meta meta = ids[p];
                         int[] data = p.GetPinData()[item.num];
                         me.ins[i] = meta.outs[data[1]];
-                        // Log.Write("ins: " + Utils.Obj2json(me.ins) + " | " + data[1]);
+                       
                     }
                 }
             }
         }
 
-        /*
-         * Экспорт, но может быть прокачан в дочернем классе, если есть что добавить
-         */
-
+       
         public abstract int TypeId { get; }
 
         public object Export() {
@@ -433,10 +392,10 @@ namespace LogicSimulator.Views.Shapes {
         }
         public virtual Dictionary<string, object>? ExtraExport() => null;
 
-        public List<object[]> ExportJoins(Dictionary<IGate, int> to_num) {
+        public List<object[]> ExportJoins(Dictionary<Func, int> to_num) {
             List<object[]> res = new();
             foreach (var joins in joins_out) foreach (var join in joins) {
-                Distantor a = join.A, b = join.B;
+                Locontrol a = join.A, b = join.B;
                 res.Add(new object[] {
                     to_num[a.parent], a.num, a.tag,
                     to_num[b.parent], b.num, b.tag,
@@ -476,13 +435,14 @@ namespace LogicSimulator.Views.Shapes {
                 }
             }
             base_size = new_b_size;
+           
             Move(new_pos);
         }
         public virtual void ExtraImport(string key, object extra) {
             Log.Write(key + "-запись элемента не поддерживается");
         }
 
-        /* Для тестирования */
+       
 
         public Ellipse SecretGetPin(int n) => pins[n];
     }

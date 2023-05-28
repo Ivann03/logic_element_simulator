@@ -7,11 +7,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace LogicSimulator.Views.Shapes {
-    public partial class LightBulb: GateBase, IGate, INotifyPropertyChanged {
+    public partial class EXIT: Bord, Func, INotifyPropertyChanged {
         public override int TypeId => 7;
 
         public override UserControl GetSelf() => this;
-        protected override IGate GetSelfI => this;
+        protected override Func GetSelfI => this;
         protected override int[][] Sides => new int[][] {
             Array.Empty<int>(),
             new int[] { 0 },
@@ -21,12 +21,10 @@ namespace LogicSimulator.Views.Shapes {
 
         protected override void Init() => InitializeComponent();
 
-        /*
-         * Мозги
-         */
+ 
 
-        readonly SolidColorBrush ColorA = new(Color.Parse("#00ff00")); // On
-        readonly SolidColorBrush ColorB = new(Color.Parse("#1c1c1c")); // Off
+        readonly SolidColorBrush ColorA = new(Color.Parse("Green")); // On
+        readonly SolidColorBrush ColorB = new(Color.Parse("#0000")); // Off
         public void Brain(ref bool[] ins, ref bool[] outs) {
             var value = state = ins[0];
             Dispatcher.UIThread.InvokeAsync(() => {
@@ -34,17 +32,13 @@ namespace LogicSimulator.Views.Shapes {
             });
         }
 
-        /*
-         * Для тестирования
-         */
+
 
         bool state;
 
         public bool GetState() => state;
 
-        /*
-         * Кастомный экспорт и импорт
-         */
+
 
         public override Dictionary<string, object> ExtraExport() => new() { ["state"] = state };
 
