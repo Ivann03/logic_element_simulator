@@ -1,0 +1,57 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Include="Assets\**" />
+	<AvaloniaResource Include="Styles\**" />
+    <None Remove=".gitignore" />
+    <None Remove="Assets\Deleter.png" />
+    <None Remove="Assets\NewItem.png" />
+    <!--<None Remove="Assets\Resizer.png" />-->
+    <None Remove="Assets\TrashCan.png" />
+    <None Remove="Assets\vectorasd-logo.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <TrimmerRootDescriptor Include="Roots.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="0.10.18" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.10.18" />
+    <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="0.10.18" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.18" />
+    <PackageReference Include="XamlNameReferenceGenerator" Version="1.5.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Views\LauncherWindow.axaml.cs">
+      <DependentUpon>LauncherWindow.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Logical_elements\MUX.axaml.cs">
+      <DependentUpon>MUX.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Logical_elements\XOR.axaml.cs">
+      <DependentUpon>XOR.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Logical_elements\OR.axaml.cs">
+      <DependentUpon>OR.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Logical_elements\NOT.axaml.cs">
+      <DependentUpon>NOT.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Logical_elements\AND.axaml.cs">
+      <DependentUpon>AND.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Logical_elements\XOR.axaml.cs">
+      <DependentUpon>XOR.axaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+</Project>

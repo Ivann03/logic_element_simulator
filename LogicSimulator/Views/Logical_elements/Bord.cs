@@ -10,8 +10,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 
-namespace LogicSimulator.Views.Logical_elements {
-    public abstract class Board: UserControl {
+namespace LogicSimulator.Views.Shapes {
+    public abstract class Bord: UserControl {
         public int CountIns { get; private set; }
         public int CountOuts { get; private set; }
         public abstract UserControl GetSelf();
@@ -29,7 +29,7 @@ namespace LogicSimulator.Views.Logical_elements {
         protected bool use_bottom;
         private int[][] pin_data;
 
-        public Board() {
+        public Bord() {
             var sides = Sides;
             use_top = sides[0].Length > 0;
             use_left = sides[1].Length > 0;
@@ -50,16 +50,10 @@ namespace LogicSimulator.Views.Logical_elements {
             CountIns = ins;
             CountOuts = outs + ios;
 
-            /* double sizer = sides.Select(x => x.Length).Max();
-            double vert_sizer = Math.Max(Math.Max(sides[0].Length, sides[3].Length), 3);
-            width = 30 * (2 + Math.Min(sizer, vert_sizer) / 2);
-            height = Math.Max(30 * (2 + sizer / 2), (9 + 32) * 2 / 3 * (1.5 + 0.75 * CountIns.Max(CountOuts)));*/
             width = MinW; height = MinH;
             if (height < width) height = width;
-            // AvaloniaXamlLoader.Load(GetSelf()); // InitializeComponent(); Не вышло :///
-            // А так от Init бы полностью отказался бы ;'-} Принцип Подскановки Лископ бы просто пылал от этого, хоть абстрактному классу и положено зависеть от потомка ;'-}
-            DataContext = GetSelf();
-            Init(); // :///
+           DataContext = GetSelf();
+            Init(); 
 
             var canv = (Canvas) LogicalChildren[0];
             List<Line> list = new();
@@ -90,18 +84,28 @@ namespace LogicSimulator.Views.Logical_elements {
             MyRecalcSizes();
         }
 
-        /*
-         * Всё о размерах и позициях самого элемента ;'-}
-         */
+        
+         // Всё о размерах и позициях самого элемента 
+         
 
         public void Move(Point pos, bool global = false) {
             Margin = new(pos.X - UC_Width / 2, pos.Y - UC_Height / 2, 0, 0);
-            // Log.Write("Пришла позиция: " + pos + " | а вышла: " + GetPos());
+
             UpdateJoins(global);
         }
 
         private double MinW => BodyRadius.TopLeft * 1.5 + (EllipseSize + BaseFraction * 2) * (Sides[0].Length.Max(Sides[3].Length).Max(2) - 0.8);
         private double MinH => BodyRadius.TopLeft * 1.5 + (EllipseSize + BaseFraction * 2) * (Sides[1].Length.Max(Sides[2].Length).Max(2) - 0.8);
+
+        public void ChangeScale(double scale, bool global = false) {
+            var fix = GetPos();
+            base_size *= scale;
+            width *= scale;
+            height *= scale;
+            Move(fix, global);
+            RecalcSizes();
+            UpdateJoins(global);
+        }
 
         public Point GetPos() => new(Margin.Left + UC_Width / 2, Margin.Top + UC_Height / 2);
         public Size GetSize() => new(Width, Height);
@@ -112,12 +116,8 @@ namespace LogicSimulator.Views.Logical_elements {
         public Point GetPose() => pose;
         public Rect GetBounds() => new(Margin.Left, Margin.Top, UC_Width, UC_Height);
 
-        /*
-         * Обработка размеров внутренностей
-         */
-
         protected double base_size = 25;
-        protected double width = 29 * 3; // Размеры тела, а не всего UserControl
+        protected double width = 30 * 3; 
         protected double height = 30 * 3;
 
         public double BaseSize => base_size;
@@ -141,8 +141,7 @@ namespace LogicSimulator.Views.Logical_elements {
         public Thickness ImageMargins { get {
             double R = BodyRadius.BottomLeft;
             double num = R - R / Math.Sqrt(2);
-            return new(0, 0, num, num); // Картинка с переместителем
-            // Картинка с удалителем ... устранена ;'-}
+            return new(0, 0, num, num); 
         } }
 
 
@@ -154,9 +153,7 @@ namespace LogicSimulator.Views.Logical_elements {
             double min = EllipseSize + BaseFraction * 2;
             double pin_start = EllipseSize - EllipseStrokeSize / 2;
             double pin_width = base_size - EllipseSize + PinStrokeSize;
-            // .1.
-            // .1..2.
-            // .1..2..3.
+
             foreach (var side in Sides) {
                 n++;
                 double count = side.Length;
@@ -243,6 +240,7 @@ namespace LogicSimulator.Views.Logical_elements {
                 var B = pin_points[n++][1];
 
                 line.StrokeThickness = pin_stroke_size;
+
                 line.Margin = new(A.X, A.Y, 0, 0);
                 line.EndPoint = B;
             }
@@ -259,6 +257,7 @@ namespace LogicSimulator.Views.Logical_elements {
             }
         }
 
+  //Обработка соеденений
         protected Connected?[] joins_in;
         protected List<Connected>[] joins_out;
 
@@ -309,7 +308,7 @@ namespace LogicSimulator.Views.Logical_elements {
             var joins = joins_out[o_num];
             Dispatcher.UIThread.InvokeAsync(() => { 
                 foreach(var join in joins)
-                    join.line.Stroke = value ? Brushes.Black : Brushes.Black;
+                    join.line.Stroke = Brushes.Black;
             });
         }
 
@@ -320,6 +319,8 @@ namespace LogicSimulator.Views.Logical_elements {
             return false;
         }
 
+
+
         public Locontrol GetPin(Ellipse finded) {
             int n = 0;
             foreach (var pin in pins) {
@@ -329,13 +330,16 @@ namespace LogicSimulator.Views.Logical_elements {
             throw new Exception("Так не бывает");
         }
 
+       
+
         Thickness[] ellipse_margins = Array.Empty<Thickness>();
 
         public Point GetPinPos(int n) {
-            var m = ellipse_margins[n];
+           var m = ellipse_margins[n];
             double R2 = EllipseSize / 2;
             return new Point(Margin.Left + m.Left + R2, Margin.Top + m.Top + R2);
         }
+
 
         public int[][] GetPinData() => pin_data;
 
@@ -355,7 +359,8 @@ namespace LogicSimulator.Views.Logical_elements {
                         var p = item.parent;
                         Meta meta = ids[p];
                         int[] data = p.GetPinData()[item.num];
-                        me.ins[i] = meta.outs[data[1]];                       
+                        me.ins[i] = meta.outs[data[1]];
+                       
                     }
                 }
                 if (join.B.parent == this) {
@@ -365,11 +370,13 @@ namespace LogicSimulator.Views.Logical_elements {
                         Meta meta = ids[p];
                         int[] data = p.GetPinData()[item.num];
                         me.ins[i] = meta.outs[data[1]];
+                       
                     }
                 }
             }
         }
 
+       
         public abstract int TypeId { get; }
 
         public object Export() {
@@ -428,11 +435,15 @@ namespace LogicSimulator.Views.Logical_elements {
                 }
             }
             base_size = new_b_size;
+           
             Move(new_pos);
         }
         public virtual void ExtraImport(string key, object extra) {
             Log.Write(key + "-запись элемента не поддерживается");
         }
+
+       
+
         public Ellipse SecretGetPin(int n) => pins[n];
     }
 }

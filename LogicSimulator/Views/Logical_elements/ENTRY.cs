@@ -8,8 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace LogicSimulator.Views.Logical_elements {
-    public partial class Entry: Board, Func, INotifyPropertyChanged {
+namespace LogicSimulator.Views.Shapes {
+    public partial class ENTRY: Bord, Func, INotifyPropertyChanged {
         public override int TypeId => 5;
 
         public override UserControl GetSelf() => this;
@@ -23,15 +23,11 @@ namespace LogicSimulator.Views.Logical_elements {
 
         protected override void Init() => InitializeComponent();
 
-        /*
-         * Мозги
-         */
-
+       
         bool my_state = false;
         Point? press_pos;
 
-        // Данная схема работает гораздо быстрее, чем событие Tapped ;'-} Из-за того, что не обрабатывается дополнительно DoubleTapped, что гасит второй Tapped + некоторые задержки
-        private static Point GetPos(PointerEventArgs e) {
+       private static Point GetPos(PointerEventArgs e) {
             if (e.Source is not Control src) return new();
             while ((string?) src.Tag != "scene" && src.Parent != null) src = (Control) src.Parent;
             return e.GetCurrentPoint(src).Position;
@@ -45,31 +41,25 @@ namespace LogicSimulator.Views.Logical_elements {
             press_pos = null;
 
             my_state = !my_state;
-            border.Background = new SolidColorBrush(Color.Parse(my_state ? "#7d1414" : "#d32f2e"));
+            border.Background = new SolidColorBrush(Color.Parse(my_state ? "#228B22" : "#FF0000"));
         }
 
         public void Brain(ref bool[] ins, ref bool[] outs) => outs[0] = my_state;
 
-        /*
-         * Кастомный экспорт и импорт
-         */
-
+      
         public override Dictionary<string, object> ExtraExport() => new() { ["state"] = my_state };
 
         public override void ExtraImport(string key, object extra) {
             if (key != "state") { Log.Write(key + "-запись элемента не поддерживается"); return; }
             if (extra is not bool @state) { Log.Write("Неверный тип state-записи элемента: " + extra); return; }
             my_state = @state;
-            if (my_state) border.Background = new SolidColorBrush(Color.Parse("#7d1414"));
+            if (my_state) border.Background = new SolidColorBrush(Color.Parse("#228B22"));
         }
 
-        /*
-         * Для тестирования
-         */
-
+        
         public void SetState(bool state) {
             my_state = state;
-            border.Background = new SolidColorBrush(Color.Parse(state ? "#7d1414" : "#d32f2e"));
+            border.Background = new SolidColorBrush(Color.Parse(state ? "#228B22" : "#FF0000"));
         }
     }
 }

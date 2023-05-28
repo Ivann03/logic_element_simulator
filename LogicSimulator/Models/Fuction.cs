@@ -1,7 +1,7 @@
 using Avalonia.Controls;
 using Avalonia;
 using LogicSimulator.ViewModels;
-using LogicSimulator.Views.Logical_elements;
+using LogicSimulator.Views.Shapes;
 using System;
 using System.Collections.Generic;
 using DynamicData;
@@ -9,11 +9,11 @@ using Avalonia.Controls.Shapes;
 using Avalonia.Media;
 using Avalonia.LogicalTree;
 using System.Linq;
-using Entry = LogicSimulator.Views.Logical_elements.Entry;
+using ENTRY = LogicSimulator.Views.Shapes.ENTRY;
 using Avalonia.Input;
 
 namespace LogicSimulator.Models {
-    public class Fuctoin {
+    public class Fuction {
         readonly Line marker = new() { Tag = "Marker", ZIndex = 2, IsVisible = false, Stroke = Brushes.Black, StrokeThickness = 3 };
         readonly Rectangle marker2 = new() { Tag = "Marker", Classes = new("anim"), ZIndex = 2, IsVisible = false, Stroke = Brushes.MediumAquamarine, StrokeThickness = 3 };
         
@@ -23,7 +23,8 @@ namespace LogicSimulator.Models {
         public readonly Imitator sim = new(); 
 
         public Canvas canv = new();
-
+        
+        //Маркеры
         private Func? marked_item;
         private Connected? marked_line;
 
@@ -48,6 +49,7 @@ namespace LogicSimulator.Models {
             }
         }
 
+        //Выбор элемента
         private int selected_item = 0;
         public int SelectedItem { get => selected_item; set => selected_item = value; }
 
@@ -57,18 +59,17 @@ namespace LogicSimulator.Models {
                 1 => new OR(),
                 2 => new NOT(),
                 3 => new XOR(),
-                4 => new Entry(),
-                5 => new Exit(),
-                6 => new MULTIPLEXER_3(),
-                7 => new NAND_2(),
-                8 => new FlipFlop(),
-                _ => new AND(),
+                4 => new MUX(),
+                5 => new ENTRY(),   
+                _ => new EXIT(),
             };
         }
 
-        public Func[] item_types = Enumerable.Range(0, 9).Select(CreateItem).ToArray();
+        public Func[] item_types = Enumerable.Range(0, 7).Select(CreateItem).ToArray();
 
         public Func GenSelectedItem() => CreateItem(selected_item);
+
+        //Хранение
 
         readonly List<Func> items = new();
         private void AddToMap(IControl item) {
@@ -105,6 +106,7 @@ namespace LogicSimulator.Models {
             foreach (var item in items) item.SavePose();
         }
 
+       //Режим перемещения
         int mode = 0;
 
         private static int CalcMode(string? tag) {
@@ -141,6 +143,7 @@ namespace LogicSimulator.Models {
             return null;
         }
 
+
         Point moved_pos;
         Func? moved_item;
         Point item_old_pos;
@@ -156,6 +159,7 @@ namespace LogicSimulator.Models {
         public bool lock_self_connect = true;
 
         public void Press(Control item, Point pos) {
+
             UpdateMode(item);
 
             moved_pos = pos;
@@ -169,7 +173,7 @@ namespace LogicSimulator.Models {
                 break;
             case 5 or 6 or 7:
                 if (marker_circle == null) break;
-                var gate = GetGate(marker_circle) ?? throw new Exception("Неизвестно");
+                var gate = GetGate(marker_circle) ?? throw new Exception("Чё?!"); // Такого не бывает
                 start_dist = gate.GetPin(marker_circle);
 
                 var circle_pos = start_dist.GetPos();
@@ -206,14 +210,14 @@ namespace LogicSimulator.Models {
 
         public void FixItem(ref Control res, Point pos, IEnumerable<ILogical> items) {
             foreach (var logic in items) {
-                var item = (Control) logic;
+                 var item = (Control) logic;
                 var tb = item.TransformedBounds;
                 if (tb != null && tb.Value.Bounds.TransformToAABB(tb.Value.Transform).Contains(pos) && (string?) item.Tag != "Join") res = item; // Гениально! Апгрейд прошёл успешно :D
                 FixItem(ref res, pos, item.GetLogicalChildren());
             }
         }
         public void Move(Control item, Point pos, bool use_fix = true) {
-            
+           
             if (use_fix && (mode == 5 || mode == 6 || mode == 7 || mode == 8)) {
                 var tb = canv.TransformedBounds;
                 if (tb != null) {
@@ -228,13 +232,14 @@ namespace LogicSimulator.Models {
             if (IsMode(item, mods) && item is Ellipse @ellipse
                 && !(marker_mode == 5 && tag == "In" || marker_mode == 6 && tag == "Out" ||
                 lock_self_connect && moved_item == GetGate(item))) { 
-                if (marker_circle != null && marker_circle != @ellipse) { 
+
+                if (marker_circle != null && marker_circle != @ellipse) {
                     marker_circle.Fill = new SolidColorBrush(Color.Parse("#0000"));
                     marker_circle.Stroke = Brushes.Black;
                 }
                 marker_circle = @ellipse;
-                @ellipse.Fill = Brushes.Red;
-                @ellipse.Stroke = Brushes.Red;
+                @ellipse.Fill = Brushes.Black;
+                @ellipse.Stroke = Brushes.Black;
             } else if (marker_circle != null) {
                 marker_circle.Fill = new SolidColorBrush(Color.Parse("#0000"));
                 marker_circle.Stroke = Brushes.Black;
@@ -243,6 +248,7 @@ namespace LogicSimulator.Models {
 
             if (mode == 8) delete_join = (string?) item.Tag == "Deleter";
 
+            
             var delta = pos - moved_pos;
             if (delta.X == 0 && delta.Y == 0) return;
 
@@ -280,12 +286,12 @@ namespace LogicSimulator.Models {
 
         public int Release(Control item, Point pos, bool use_fix = true) {
             Move(item, pos, use_fix);
-           
+            
             switch (mode) {
             case 5 or 6 or 7:
                 if (start_dist == null) break;
                 if (marker_circle != null) {
-                    var gate = GetGate(marker_circle) ?? throw new Exception("Неизвестно");
+                    var gate = GetGate(marker_circle) ?? throw new Exception("Неизвестно"); 
                     var end_dist = gate.GetPin(marker_circle);
                     var newy = new Connected(start_dist, end_dist);
                     AddToMap(newy.line);
@@ -323,10 +329,9 @@ namespace LogicSimulator.Models {
         }
 
         private void Tapped(Control item, Point pos) {
-             tap_pos = pos;
+           tap_pos = pos;
 
             switch (mode) {
-
             case 2 or 8:
                 if (item is Line @line) {
                     if (!Connected.arrow_to_join.TryGetValue(@line, out var @join)) break;
@@ -365,6 +370,9 @@ namespace LogicSimulator.Models {
                 break;
             }
         }
+
+
+       //Экспорт и импорт
 
         public readonly Treatment filer = new();
         public Diagram? current_scheme;
@@ -428,7 +436,7 @@ namespace LogicSimulator.Models {
 
             sim.Import(current_scheme.states);
             sim.lock_sim = false;
-            if (start) sim.Start();
+            if (start) sim.Start(); 
         }
     }
 }

@@ -4,7 +4,7 @@ using Avalonia.Controls.Shapes;
 using LogicSimulator.Models;
 using System.Collections.Generic;
 
-namespace LogicSimulator.Views.Logical_elements {
+namespace LogicSimulator.Views.Shapes {
     public interface Func {
         public int CountIns { get; }
         public int CountOuts { get; }
@@ -14,6 +14,7 @@ namespace LogicSimulator.Views.Logical_elements {
         public Size GetSize();
         public Size GetBodySize();
         public void Move(Point pos, bool global = false);
+        public void ChangeScale(double scale, bool global = false);
         public void SavePose();
         public Point GetPose();
         public Rect GetBounds();

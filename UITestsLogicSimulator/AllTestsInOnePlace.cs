@@ -4,7 +4,7 @@ using Avalonia.VisualTree;
 using LogicSimulator.Models;
 using LogicSimulator.ViewModels;
 using LogicSimulator.Views;
-using LogicSimulator.Views.Logical_elements;
+using LogicSimulator.Views.Shapes;
 using System.Text;
 using Button = Avalonia.Controls.Button;
 
@@ -12,7 +12,7 @@ namespace UITestsLogicSimulator {
     public class AllTestsInOnePlace {
         private readonly LauncherWindow launcherWindow = AvaloniaApp.GetMainWindow();
         private readonly MainWindow mainWindow = LauncherWindowViewModel.GetMW;
-        private readonly Fuctoin map = ViewModelBase.map;
+        private readonly Fuction map = ViewModelBase.map;
 
         private readonly Canvas canv;
         private readonly ListBox gates;
@@ -21,7 +21,7 @@ namespace UITestsLogicSimulator {
 
         bool first_log = true;
         readonly string path = "../../../TestLog.txt";
-#pragma warning disable IDE0051 // Удалите неиспользуемые закрытые члены
+#pragma warning disable IDE0051 
         private void Log(string? message) {
             message ??= "null";
             if (first_log) {
@@ -34,17 +34,12 @@ namespace UITestsLogicSimulator {
             var buttons = launcherWindow.GetVisualDescendants().OfType<Button>();
             var new_proj = buttons.First(x => (string) x.Content == "Создать новый проект");
             new_proj.Command.Execute(null);
-            // Только таки имбовая возможность создать проект, но никогда не определять ему файл
-            // сохранения, от чего данные unit-test'ы никогда не появлияют на файловую систему :D
-
+            
             var vis_arr = mainWindow.GetVisualDescendants();
             canv = vis_arr.OfType<Canvas>().First(x => (string?) x.Tag == "Scene");
-            // canv.PointerEnter
-            // И тут выясняется, что я в принципе не могу имитировать клики по холсту, по этому
-            // придётся воздействовать на приложение через Mapper на прямую.
-
+           
             gates = vis_arr.OfType<ListBox>().First(x => x.Name == "Gates");
-            map.sim.Stop(); // чтобы в холостую не работало, я сам задам количество тиков методом Ticks здесь
+            map.sim.Stop(); 
         }
 
 
@@ -53,7 +48,7 @@ namespace UITestsLogicSimulator {
             var pos = new Point(x, y);
             map.Press(target, pos);
             int mode = map.Release(target, pos);
-            // Log("Tapped: " + map.tapped + " | " + mode);
+           
             if (map.tapped && mode == 1) {
                 var tpos = map.tap_pos;
                 var newy = map.GenSelectedItem();
@@ -66,8 +61,7 @@ namespace UITestsLogicSimulator {
         private void Move(Control a, Control b) {
             map.Move(a, new());
             map.Press(a, new());
-            /*int mode = */ map.Release(b, new(100, 100), false); // В себе уже имеет map.Move(target, pos2)
-            // Log("Moved: " + map.tapped + " | " + mode);
+            map.Release(b, new(100, 100), false); 
         }
         private string Export() {
             map.Export();
@@ -78,11 +72,11 @@ namespace UITestsLogicSimulator {
             scheme.Modified = 456;
             return Plugin.Obj2json(scheme.Export());
         }
-        private void SelectGate(int id) => gates.SelectedIndex = id; // Хоть что-то хотя бы возможно сделать чисто через визуальную часть, а не в обход обёрток, нюхающих ивенты ;'-}
+        private void SelectGate(int id) => gates.SelectedIndex = id; 
         private void Ticks(int count) {
             while (count-- > 0) map.sim.TopSecretPublicTickMethod();
         }
-        private static void SaveProject() { // Чтобы только посмотреть, что всё соединилось как надо
+        private static void SaveProject() {
             var proj = ViewModelBase.TopSecretGetProj() ?? throw new Exception("А где проект? :/");
             proj.SetDir("../../..");
             proj.FileName = "tested";
@@ -112,7 +106,7 @@ namespace UITestsLogicSimulator {
             sim.ComparativeTestMode = true;
 
             var inputs = sim.GetSwitches();
-            var outputs = sim.GetExits();
+            var outputs = sim.GetEXITs();
             int L = inputs.Length;
             int steps = 1 << L;
 
@@ -176,10 +170,10 @@ namespace UITestsLogicSimulator {
 
             Move(gate2.SecretGetPin(2), ball.SecretGetPin(0));
 
-            var input = (Entry) button;
-            var input2 = (Entry) button2;
-            var input3 = (Entry) button3;
-            var output = (Exit) ball;
+            var input = (ENTRY) button;
+            var input2 = (ENTRY) button2;
+            var input3 = (ENTRY) button3;
+            var output = (EXIT) ball;
 
             StringBuilder sb = new();
             for (int i = 0; i < 8; i++) {
@@ -230,10 +224,6 @@ namespace UITestsLogicSimulator {
             res = ComplexSolution();
             Assert.Equal("100000_t1|010000_t10|010000_t11|001000_t11|010000_t10|001000_t10|001000_t11|000100_t11|010000_t9|001000_t10|001000_t11|000100_t11|001000_t10|000100_t10|000100_t11|000010_t11|010000_t8|001000_t10|001000_t11|000100_t11|001000_t10|000100_t10|000100_t11|000010_t11|001000_t9|000100_t10|000100_t11|000010_t11|000100_t10|000010_t10|000010_t11|000001_t11", res);
 
-            /* Log("res: " + res);
-            Log("Export: " + Export());
-            Log("ОК!");
-            SaveProject();*/
         }
     }
 }

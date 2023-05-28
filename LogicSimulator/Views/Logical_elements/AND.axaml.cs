@@ -2,8 +2,8 @@ using Avalonia.Controls;
 using System.ComponentModel;
 
 namespace LogicSimulator.Views.Shapes {
-    public partial class XOR: Bord, Func, INotifyPropertyChanged {
-        public override int TypeId => 3;
+    public partial class AND: Bord, Func, INotifyPropertyChanged {
+        public override int TypeId => 0;
 
         public override UserControl GetSelf() => this;
         protected override Func GetSelfI => this;
@@ -16,7 +16,7 @@ namespace LogicSimulator.Views.Shapes {
 
         protected override void Init() => InitializeComponent();
 
- 
-        public void Brain(ref bool[] ins, ref bool[] outs) => outs[0] = ins[0] ^ ins[1];
+
+        public void Brain(ref bool[] ins, ref bool[] outs) => outs[0] = ins[0] && ins[1];
     }
 }

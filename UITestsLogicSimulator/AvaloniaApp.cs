@@ -8,11 +8,6 @@ using LogicSimulator.Views;
 
 namespace UITestsLogicSimulator {
     public static class AvaloniaApp {
-        // DI registrations
-        /* public static void RegisterDependencies() =>
-             Bootstrapper.Register(AvaloniaLocator.CurrentMutable, AvaloniaLocator.Current);*/
-
-        // stop app and cleanup
         public static void Stop() {
             var app = GetApp();
             if (app is IDisposable disposable) Dispatcher.UIThread.Post(disposable.Dispose);
@@ -34,7 +29,7 @@ namespace UITestsLogicSimulator {
                 .Configure<App>()
                 .UsePlatformDetect()
                 .UseReactiveUI()
-                .UseHeadless(); // Need a package Avalonia.Headless 0.10.18 (уже 0.10.19) from NuGet for this method
+                .UseHeadless(); 
         }
     }
 }

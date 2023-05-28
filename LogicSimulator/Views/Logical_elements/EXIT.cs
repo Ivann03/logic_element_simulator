@@ -6,8 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace LogicSimulator.Views.Logical_elements {
-    public partial class Exit: Board, Func, INotifyPropertyChanged {
+namespace LogicSimulator.Views.Shapes {
+    public partial class EXIT: Bord, Func, INotifyPropertyChanged {
         public override int TypeId => 7;
 
         public override UserControl GetSelf() => this;
@@ -21,12 +21,10 @@ namespace LogicSimulator.Views.Logical_elements {
 
         protected override void Init() => InitializeComponent();
 
-        /*
-         * Мозги
-         */
+ 
 
-        readonly SolidColorBrush ColorA = new(Color.Parse("#00ff00")); // On
-        readonly SolidColorBrush ColorB = new(Color.Parse("#1c1c1c")); // Off
+        readonly SolidColorBrush ColorA = new(Color.Parse("Green")); // On
+        readonly SolidColorBrush ColorB = new(Color.Parse("#0000")); // Off
         public void Brain(ref bool[] ins, ref bool[] outs) {
             var value = state = ins[0];
             Dispatcher.UIThread.InvokeAsync(() => {
@@ -34,17 +32,13 @@ namespace LogicSimulator.Views.Logical_elements {
             });
         }
 
-        /*
-         * Для тестирования
-         */
+
 
         bool state;
 
         public bool GetState() => state;
 
-        /*
-         * Кастомный экспорт и импорт
-         */
+
 
         public override Dictionary<string, object> ExtraExport() => new() { ["state"] = state };
 
