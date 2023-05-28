@@ -9,7 +9,7 @@ using Avalonia.Controls.Shapes;
 using Avalonia.Media;
 using Avalonia.LogicalTree;
 using System.Linq;
-using Button = LogicSimulator.Views.Logical_elements.Entry;
+using Entry = LogicSimulator.Views.Logical_elements.Entry;
 using Avalonia.Input;
 
 namespace LogicSimulator.Models {
@@ -60,11 +60,13 @@ namespace LogicSimulator.Models {
                 4 => new Entry(),
                 5 => new Exit(),
                 6 => new MULTIPLEXER_3(),
+                7 => new NAND_2(),
+                8 => new FlipFlop(),
                 _ => new AND(),
             };
         }
 
-        public Func[] item_types = Enumerable.Range(0, 7).Select(CreateItem).ToArray();
+        public Func[] item_types = Enumerable.Range(0, 9).Select(CreateItem).ToArray();
 
         public Func GenSelectedItem() => CreateItem(selected_item);
 
